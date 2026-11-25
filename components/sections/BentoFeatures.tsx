@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Video, Wifi, CheckCircle } from "lucide-react";
-import { Reveal, Stagger, StaggerItem } from "@/components/ui/reveal";
+import { Reveal } from "@/components/ui/reveal";
 import { MagicCard } from "@/components/ui/magic-card";
 import { useSectionParallax } from "@/hooks/useParallax";
 
@@ -12,7 +12,7 @@ export function BentoFeatures() {
   const { ref, y } = useSectionParallax(0.04);
 
   return (
-    <section id="features" ref={ref} className="site-section relative overflow-hidden">
+    <section id="features" ref={ref} className="site-section relative overflow-hidden pb-20 sm:pb-24">
       <div
         aria-hidden
         className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-violet-200/30 blur-3xl will-change-transform"
@@ -31,12 +31,12 @@ export function BentoFeatures() {
           </h2>
           <p className="type-lead mx-auto mt-4">
             Old review sites give you walls of text. Tapsy gives you authentic 30s
-            clips — food, fitness, travel, beauty, nightlife — from people you can see and hear.
+            clips food, fitness, travel, beauty, nightlife from people you can see and hear.
           </p>
         </Reveal>
 
-        <Stagger className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12">
-          <StaggerItem className="lg:col-span-8">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-12">
+          <Reveal from="left" className="lg:col-span-8">
             <MagicCard className="rounded-[24px] bg-white shadow-[0_20px_50px_-28px_rgba(15,10,40,0.18)]">
             <motion.div
               whileHover={{ y: -3 }}
@@ -47,7 +47,7 @@ export function BentoFeatures() {
                   src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=1400&q=80"
                   alt="30 second video reviews"
                   fill
-                  className="object-cover transition duration-700 group-hover:scale-105"
+                  className="media-zoom object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
                 <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8">
@@ -72,21 +72,21 @@ export function BentoFeatures() {
               </div>
             </motion.div>
             </MagicCard>
-          </StaggerItem>
+          </Reveal>
 
-          <StaggerItem className="lg:col-span-4">
+          <Reveal from="right" delay={0.08} className="lg:col-span-4">
             <MagicCard className="h-full rounded-[24px] bg-white shadow-[0_20px_50px_-28px_rgba(15,10,40,0.18)]">
             <motion.div
               id="business"
               whileHover={{ y: -3 }}
               className="flex h-full flex-col overflow-hidden rounded-[24px]"
             >
-              <div className="relative h-36 overflow-hidden">
+              <div className="group relative h-36 overflow-hidden">
                 <Image
                   src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=900&q=80"
                   alt="NFC standees for venues"
                   fill
-                  className="object-cover"
+                  className="media-zoom object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white to-transparent" />
               </div>
@@ -113,9 +113,8 @@ export function BentoFeatures() {
               </div>
             </motion.div>
             </MagicCard>
-          </StaggerItem>
-
-        </Stagger>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

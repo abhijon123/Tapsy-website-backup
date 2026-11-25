@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { cn, assetUrl } from "@/lib/utils";
 import { siteVideos } from "@/lib/content";
-import { TapsyPlayButton } from "@/components/ui/tapsy-play-button";
 import { AppBottomNav, AppTopBar } from "@/components/ui/app-chrome";
 
 type Mode = "auto" | "manual";
@@ -66,7 +65,6 @@ const STEP_MS = 3200;
 export function StudioBoard() {
   const [mode, setMode] = useState<Mode>("auto");
   const [step, setStep] = useState(0);
-  const [paused, setPaused] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const inView = useRef(true);
@@ -75,13 +73,12 @@ export function StudioBoard() {
 
   // Circulate steps while section is visible
   useEffect(() => {
-    if (paused) return;
     const id = window.setInterval(() => {
       if (!inView.current) return;
       setStep((s) => (s + 1) % flow.length);
     }, STEP_MS);
     return () => window.clearInterval(id);
-  }, [paused, mode]);
+  }, [mode]);
 
   useEffect(() => {
     const el = rootRef.current;
@@ -100,22 +97,10 @@ export function StudioBoard() {
     return () => io.disconnect();
   }, []);
 
-  const toggleVideo = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    if (v.paused) {
-      void v.play();
-      setPaused(false);
-    } else {
-      v.pause();
-      setPaused(true);
-    }
-  };
-
   return (
     <div
       ref={rootRef}
-      className="mt-14 rounded-[32px] bg-[#0a0a0f] px-5 py-10 text-white sm:px-8 sm:py-12 lg:px-10"
+      className="mt-10 overflow-hidden rounded-[32px] bg-[#0a0a0f] px-5 py-10 text-white sm:mt-14 sm:px-8 sm:py-12 lg:px-10"
     >
       <div className="mx-auto mb-10 max-w-2xl text-center">
         <h3 className="text-[clamp(1.75rem,3.6vw,2.6rem)] font-bold tracking-[-0.035em] leading-[1.1]">
@@ -128,10 +113,10 @@ export function StudioBoard() {
         </p>
       </div>
 
-      <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,280px)_minmax(0,1fr)] lg:gap-8 xl:gap-12">
+      <div className="grid min-w-0 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,280px)_minmax(0,1fr)] lg:gap-8 xl:gap-12">
         {/* Left copy + toggle */}
-        <div className="order-2 lg:order-1">
-          <div className="mb-5 inline-flex rounded-full bg-white/[0.06] p-1">
+        <div className="order-2 min-w-0 lg:order-1">
+          <div className="mb-5 inline-flex max-w-full flex-wrap rounded-full bg-white/[0.06] p-1">
             {(
               [
                 { id: "auto", label: "Let Tapsy do it" },
@@ -146,7 +131,7 @@ export function StudioBoard() {
                   setStep(0);
                 }}
                 className={cn(
-                  "rounded-full px-4 py-2 text-[13px] font-semibold transition",
+                  "rounded-full px-3 py-2 text-[12px] font-semibold transition sm:px-4 sm:text-[13px]",
                   mode === opt.id
                     ? "bg-white text-zinc-900 shadow-lg shadow-black/30"
                     : "text-white/60 hover:text-white"
@@ -196,7 +181,7 @@ export function StudioBoard() {
         </div>
 
         {/* Center phone — one circulating video */}
-        <div className="order-1 mx-auto w-[230px] sm:w-[250px] lg:order-2 lg:w-[260px]">
+        <div className="order-1 mx-auto w-[min(230px,72vw)] sm:w-[250px] lg:order-2 lg:w-[260px]">
           <div className="hero-phone aspect-[9/19.2] w-full shadow-[0_28px_60px_-18px_rgba(0,0,0,0.65)]">
             <div className="hero-phone-screen group">
               <video
@@ -307,29 +292,12 @@ export function StudioBoard() {
                 </motion.div>
               </AnimatePresence>
 
-              <button
-                type="button"
-                onClick={toggleVideo}
-                className="absolute inset-0 z-20 flex items-center justify-center"
-                aria-label={paused ? "Play video" : "Pause video"}
-              >
-                <span
-                  className={cn(
-                    "transition-opacity duration-200",
-                    paused
-                      ? "opacity-100"
-                      : "opacity-0 group-hover:opacity-100"
-                  )}
-                >
-                  <TapsyPlayButton playing={!paused} size="sm" />
-                </span>
-              </button>
             </div>
           </div>
         </div>
 
         {/* Right step rail — click to jump, auto circulates */}
-        <div className="order-3 space-y-2">
+        <div className="order-3 min-w-0 space-y-2">
           <p className="mb-3 text-[12px] font-medium text-white/40">
             Same flow · one video
           </p>
@@ -343,11 +311,10 @@ export function StudioBoard() {
                 type="button"
                 onClick={() => {
                   setStep(i);
-                  setPaused(false);
                   void videoRef.current?.play();
                 }}
                 className={cn(
-                  "flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left transition",
+                  "flex w-full max-w-full items-center gap-2.5 rounded-2xl px-2.5 py-2.5 text-left transition sm:gap-3 sm:px-3",
                   isActive
                     ? "bg-violet-500/20 ring-1 ring-violet-400/30"
                     : "bg-white/[0.035] hover:bg-white/[0.06]"
@@ -367,10 +334,10 @@ export function StudioBoard() {
                     <Icon className="h-3.5 w-3.5" />
                   )}
                 </span>
-                <span className="min-w-0 flex-1">
+                <span className="min-w-0 flex-1 overflow-hidden">
                   <span
                     className={cn(
-                      "block text-[13px] font-semibold",
+                      "block truncate text-[13px] font-semibold",
                       isActive ? "text-white" : "text-white/70"
                     )}
                   >
@@ -380,20 +347,20 @@ export function StudioBoard() {
                     {item.detail}
                   </span>
                 </span>
-                <span className="text-[11px] font-bold text-white/30">
+                <span className="shrink-0 text-[11px] font-bold text-white/30">
                   {String(i + 1).padStart(2, "0")}
                 </span>
               </button>
             );
           })}
 
-          {/* Progress bar for current step */}
-          <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/10">
+          {/* Progress bar for current step — scaleX so it never overflows the card */}
+          <div className="mt-3 h-1 w-full max-w-full overflow-hidden rounded-full bg-white/10">
             <motion.div
               key={step}
-              className="h-full rounded-full bg-gradient-tapsy"
-              initial={{ width: "0%" }}
-              animate={{ width: paused ? undefined : "100%" }}
+              className="h-full origin-left rounded-full bg-gradient-tapsy"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
               transition={{ duration: STEP_MS / 1000, ease: "linear" }}
             />
           </div>

@@ -62,7 +62,7 @@ const quotes = [
 function QuoteCard({ q }: { q: (typeof quotes)[number] }) {
   return (
     <MagicCard className="w-[260px] shrink-0 rounded-2xl bg-zinc-50 sm:w-[280px]">
-      <article className="flex h-full flex-col justify-between p-4 sm:p-5">
+      <article className="group flex h-full flex-col justify-between p-4 sm:p-5">
         <div>
           <p className="text-[12px] tracking-[0.16em] text-fuchsia-500">★★★★★</p>
           <p className="mt-2.5 text-[13px] leading-[1.55] text-zinc-700 sm:text-[14px]">
@@ -70,8 +70,8 @@ function QuoteCard({ q }: { q: (typeof quotes)[number] }) {
           </p>
         </div>
         <div className="mt-4 flex items-center gap-2.5">
-          <div className="relative h-9 w-9 overflow-hidden rounded-full">
-            <Image src={q.image} alt={q.name} fill className="object-cover" />
+          <div className="relative h-9 w-9 overflow-hidden rounded-full ring-2 ring-white shadow-md">
+            <Image src={q.image} alt={q.name} fill className="media-zoom object-cover" sizes="36px" />
           </div>
           <div>
             <p className="text-[13px] font-bold text-zinc-900">{q.name}</p>
@@ -93,7 +93,7 @@ export function Testimonials() {
               <WordsPullUp text="Loved by real reviewers" />
             </h2>
             <p className="type-lead mt-3">
-              Food, fitness, travel, nightlife — people trust a 30s take over a wall of text.
+              Food, fitness, travel, nightlife people trust a 30s take over a wall of text.
             </p>
           </div>
           <p className="shrink-0 text-[15px] font-semibold text-zinc-800">

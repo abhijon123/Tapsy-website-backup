@@ -103,6 +103,49 @@ export function PublishEverywhere() {
   const hubRef = useRef<HTMLDivElement>(null);
   const destRefs = useRef<(HTMLElement | null)[]>([]);
   const inView = useRef(true);
+  /**
+   * Fit any viewport: keep exact desktop stage geometry + timing,
+   * CSS-scale the board whenever its column is narrower than the design width.
+   * (Fixes phones AND small/medium monitors — large screens stay scale 1.)
+   */
+  const STAGE_DESIGN_W = 640;
+  const [fit, setFit] = useState({ scale: 1, height: 0 });
+  const fitScaleRef = useRef(1);
+
+  useEffect(() => {
+    const update = () => {
+      const stage = stageRef.current;
+      const board = boardRef.current;
+      if (!stage || !board) return;
+
+      const naturalH = Math.max(stage.scrollHeight, stage.offsetHeight, 460);
+      const available = Math.max(240, board.clientWidth);
+      const scale = Math.min(1, available / STAGE_DESIGN_W);
+
+      fitScaleRef.current = scale;
+      setFit({
+        scale,
+        height: scale < 1 ? Math.ceil(naturalH * scale) : 0,
+      });
+    };
+
+    update();
+    const ro = new ResizeObserver(() => update());
+    if (boardRef.current) ro.observe(boardRef.current);
+    if (stageRef.current) ro.observe(stageRef.current);
+    window.addEventListener("resize", update);
+    // Re-fit after layout animations settle
+    const t1 = window.setTimeout(update, 50);
+    const t2 = window.setTimeout(update, 400);
+    const t3 = window.setTimeout(update, 1400);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
+    };
+  }, [phase, cycle]);
 
   useEffect(() => {
     setPhase("compose");
@@ -140,19 +183,21 @@ export function PublishEverywhere() {
           const hub = hubSlotRef.current?.getBoundingClientRect();
           if (!stage || !media || !hub) return;
 
-          // Square from the visible reel (above bottom sheet) — not the whole phone
-          const size = Math.min(media.width * 0.78, media.height * 0.38);
+          // getBoundingClientRect is post-CSS-scale; absolute children use pre-scale coords
+          const s = fitScaleRef.current || 1;
+          const size =
+            Math.min(media.width * 0.78, media.height * 0.38) / s;
           setFlyFrom({
-            x: media.left - stage.left + (media.width - size) / 2,
-            y: media.top - stage.top + media.height * 0.16,
+            x: (media.left - stage.left) / s + (media.width / s - size) / 2,
+            y: (media.top - stage.top) / s + (media.height / s) * 0.16,
             w: size,
             h: size,
           });
           setFlyTo({
-            x: hub.left - stage.left,
-            y: hub.top - stage.top,
-            w: hub.width,
-            h: hub.height,
+            x: (hub.left - stage.left) / s,
+            y: (hub.top - stage.top) / s,
+            w: hub.width / s,
+            h: hub.height / s,
           });
         });
       }, COMPOSE_MS + LAYOUT_SETTLE_MS)
@@ -231,21 +276,22 @@ export function PublishEverywhere() {
             <span className="italic text-gradient-tapsy">It lands everywhere.</span>
           </h2>
           <p className="type-lead mx-auto mt-4 text-white/60">
-            One take in New Post. Hit publish — the clip peels out and fans to every feed.
+            One take in New Post. Hit publish the clip peels out and fans to every feed.
           </p>
         </Reveal>
 
         <div
           className={cn(
-            "grid w-full items-center gap-10 md:gap-12 lg:gap-16 xl:gap-20",
+            "grid w-full min-w-0 items-center gap-10 lg:gap-14 xl:gap-20",
+            /* Side-by-side only on large screens — medium monitors get full-width board */
             showDistribute
-              ? "md:grid-cols-[minmax(0,0.75fr)_minmax(0,1.35fr)]"
-              : "md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]"
+              ? "xl:grid-cols-[minmax(0,0.7fr)_minmax(0,1.4fr)]"
+              : "xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
           )}
         >
           <Reveal delay={0.08}>
-            <div className="max-w-md lg:max-w-xl">
-              <div className="mb-6 inline-flex rounded-full bg-white/[0.06] p-1 backdrop-blur-md">
+            <div className="max-w-md min-w-0 lg:max-w-xl">
+              <div className="mb-6 inline-flex max-w-full flex-wrap rounded-full bg-white/[0.06] p-1 backdrop-blur-md">
                 {(
                   [
                     { id: "auto", label: "Let Tapsy do it" },
@@ -260,7 +306,7 @@ export function PublishEverywhere() {
                       setCycle((c) => c + 1);
                     }}
                     className={cn(
-                      "rounded-full px-4 py-2 text-[13px] font-semibold transition",
+                      "rounded-full px-3 py-2 text-[12px] font-semibold transition sm:px-4 sm:text-[13px]",
                       mode === opt.id
                         ? "bg-white text-zinc-900 shadow-lg shadow-black/30"
                         : "text-white/60 hover:text-white"
@@ -300,17 +346,58 @@ export function PublishEverywhere() {
           </Reveal>
 
           <Reveal delay={0.12}>
-            <div ref={boardRef} className="relative w-full overflow-visible py-2">
+            {/*
+              Identical desktop stage (phone → hub → destinations).
+              CSS-scaled whenever the board column is narrower than design width.
+            */}
+            <div
+              ref={boardRef}
+              className="relative w-full min-w-0 overflow-x-clip py-2"
+              style={
+                fit.scale < 1 && fit.height
+                  ? { height: fit.height }
+                  : undefined
+              }
+            >
+              <div
+                className={cn(fit.scale < 1 && "mx-auto")}
+                style={
+                  fit.scale < 1
+                    ? {
+                        width: STAGE_DESIGN_W * fit.scale,
+                        height: fit.height,
+                      }
+                    : undefined
+                }
+              >
               <div
                 ref={stageRef}
-                className="relative flex w-full items-center justify-start gap-4 sm:gap-5 lg:gap-6"
+                className={cn(
+                  "relative flex items-center gap-4 sm:gap-5 lg:gap-6",
+                  /*
+                    Mobile (scaled): fixed design width + CSS scale, centered by parent.
+                    Small/medium monitors (stacked, < xl): cap width + center so the hub
+                    isn’t left-packed. Large xl+: full board width, phone can ml-auto.
+                  */
+                  fit.scale < 1
+                    ? "w-[640px] justify-center"
+                    : "mx-auto w-full max-w-[720px] justify-center xl:mx-0 xl:max-w-none xl:justify-start"
+                )}
+                style={
+                  fit.scale < 1
+                    ? {
+                        transform: `scale(${fit.scale})`,
+                        transformOrigin: "top left",
+                      }
+                    : undefined
+                }
               >
                 {/* Real stack phone — layout anim slides calmly left on Post */}
                 <motion.div
                   layout
                   className={cn(
                     "relative z-20 shrink-0 [transform:translateZ(0)]",
-                    composing && "md:ml-auto"
+                    composing && fit.scale >= 1 && "xl:ml-auto"
                   )}
                   initial={false}
                   animate={{
@@ -326,7 +413,8 @@ export function PublishEverywhere() {
                   <div
                     className={cn(
                       "hero-phone aspect-[9/19.2]",
-                      "w-[min(210px,38vw)] sm:w-[230px] lg:w-[252px]",
+                      /* Fixed px widths so mobile scale is uniform (no vw) */
+                      "w-[210px] sm:w-[230px] lg:w-[252px]",
                       "shadow-[0_28px_60px_-18px_rgba(0,0,0,0.55)] ring-2 ring-white/40"
                     )}
                   >
@@ -479,6 +567,7 @@ export function PublishEverywhere() {
                           destRefs={destRefs}
                           activeCount={published.length}
                           strokeColors={destinations.map((d) => d.stroke)}
+                          coordScale={fit.scale}
                         />
                       )}
                     </div>
@@ -520,7 +609,8 @@ export function PublishEverywhere() {
 
                     <div
                       className={cn(
-                        "relative z-10 flex min-w-0 flex-1 flex-col justify-center gap-2.5 transition-opacity duration-400",
+                        /* flex-1 only on xl — below that intrinsic width so justify-center works */
+                        "relative z-10 flex min-w-[210px] shrink-0 flex-col justify-center gap-2.5 transition-opacity duration-400 xl:flex-1 xl:shrink",
                         fanLive ? "opacity-100" : "opacity-35"
                       )}
                     >
@@ -614,6 +704,7 @@ export function PublishEverywhere() {
                     </motion.div>
                   )}
                 </AnimatePresence>
+              </div>
               </div>
             </div>
           </Reveal>

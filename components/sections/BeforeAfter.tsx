@@ -5,25 +5,22 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Type, Video } from "lucide-react";
 import { WordsPullUp } from "@/components/ui/words-pull-up";
 import { BlurFade } from "@/components/ui/blur-fade";
-import { TapsyPlayButton } from "@/components/ui/tapsy-play-button";
+import { Reveal } from "@/components/ui/reveal";
 import { cn, assetUrl } from "@/lib/utils";
 import { siteVideos } from "@/lib/content";
 
 function BannerVideo() {
   const rootRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const wantPlay = useRef(true);
   const inView = useRef(false);
-  const [pausedUI, setPausedUI] = useState(false);
 
   const sync = useCallback(() => {
     const el = videoRef.current;
     if (!el) return;
-    if (wantPlay.current && inView.current) {
-      void el.play().then(() => setPausedUI(false)).catch(() => setPausedUI(true));
+    if (inView.current) {
+      void el.play().catch(() => {});
     } else {
       el.pause();
-      setPausedUI(true);
     }
   }, []);
 
@@ -44,17 +41,12 @@ function BannerVideo() {
     };
   }, [sync]);
 
-  const toggle = () => {
-    wantPlay.current = !wantPlay.current;
-    sync();
-  };
-
   return (
     <div
       ref={rootRef}
-      className="group relative w-full overflow-hidden rounded-[28px] bg-zinc-950 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.45)]"
+      className="relative w-full overflow-hidden rounded-[28px] bg-zinc-950 shadow-[0_24px_60px_-28px_rgba(124,58,237,0.45)]"
     >
-      {/* Match Download CTA banner proportions */}
+      {/* Landscape stock reel — full-bleed cover fits the wide banner */}
       <div className="relative min-h-[320px] w-full sm:min-h-[380px] lg:min-h-[420px]">
         <video
           ref={videoRef}
@@ -63,14 +55,14 @@ function BannerVideo() {
           muted
           loop
           playsInline
+          autoPlay
           preload="metadata"
-          className="absolute inset-0 h-full w-full object-cover [transform:translateZ(0)]"
-          onPlaying={() => setPausedUI(false)}
+          className="absolute inset-0 h-full w-full object-cover object-center [transform:translateZ(0)]"
         />
 
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/15" />
 
-        <div className="absolute left-4 top-4 z-20 flex items-center gap-2 sm:left-6 sm:top-6">
+        <div className="absolute left-4 top-4 z-20 flex max-w-[calc(100%-2rem)] flex-wrap items-center gap-2 sm:left-6 sm:top-6">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-semibold text-white">
             <span className="live-dot h-1.5 w-1.5 rounded-full bg-red-500" />
             Live take
@@ -79,24 +71,6 @@ function BannerVideo() {
             Verified visit
           </span>
         </div>
-
-        <button
-          type="button"
-          onClick={toggle}
-          className="absolute inset-0 z-10 flex items-center justify-center"
-          aria-label={pausedUI ? "Play video" : "Pause video"}
-        >
-          <span
-            className={cn(
-              "transition-opacity duration-200",
-              pausedUI
-                ? "opacity-100"
-                : "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
-            )}
-          >
-            <TapsyPlayButton playing={!pausedUI} size="lg" />
-          </span>
-        </button>
 
         <div className="pointer-events-none absolute bottom-5 left-5 right-5 z-20 sm:bottom-7 sm:left-7 sm:right-7">
           <p className="text-[18px] font-bold text-white sm:text-[20px]">Real venue. Real take.</p>
@@ -119,7 +93,7 @@ export function BeforeAfter() {
           <h2 className="type-section text-foreground">
             <WordsPullUp
               text="Same place. Totally different trust."
-              className="justify-center !flex-nowrap whitespace-nowrap"
+              className="justify-center max-sm:flex-wrap sm:!flex-nowrap sm:whitespace-nowrap"
             />
           </h2>
           <p className="type-lead mx-auto mt-3">
@@ -127,30 +101,30 @@ export function BeforeAfter() {
           </p>
         </BlurFade>
 
-        <div className="mx-auto mt-8 flex w-fit rounded-full bg-white p-1 shadow-[0_12px_40px_-24px_rgba(15,10,40,0.35)]">
+        <div className="mx-auto mt-8 flex w-fit max-w-full flex-wrap justify-center rounded-full bg-white p-1 shadow-[0_12px_40px_-24px_rgba(15,10,40,0.35)]">
           <button
             onClick={() => setMode("text")}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition",
+              "inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[12px] font-semibold transition sm:px-4 sm:text-[13px]",
               mode === "text" ? "bg-zinc-900 text-white" : "text-zinc-500 hover:text-foreground"
             )}
           >
-            <Type className="h-3.5 w-3.5" />
+            <Type className="h-3.5 w-3.5 shrink-0" />
             Old text review
           </button>
           <button
             onClick={() => setMode("video")}
             className={cn(
-              "inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-[13px] font-semibold transition",
+              "inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-[12px] font-semibold transition sm:px-4 sm:text-[13px]",
               mode === "video" ? "bg-gradient-tapsy text-white" : "text-zinc-500 hover:text-foreground"
             )}
           >
-            <Video className="h-3.5 w-3.5" />
+            <Video className="h-3.5 w-3.5 shrink-0" />
             Tapsy 30s take
           </button>
         </div>
 
-        <div className="relative mt-8 w-full">
+        <Reveal from="left" className="relative mt-8 w-full overflow-x-clip">
           <AnimatePresence mode="wait">
             {mode === "text" ? (
               <motion.article
@@ -192,7 +166,7 @@ export function BeforeAfter() {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

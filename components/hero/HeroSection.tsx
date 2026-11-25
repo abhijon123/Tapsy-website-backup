@@ -39,7 +39,7 @@ export function HeroSection() {
   const offset = useParallax(700);
 
   return (
-    <section className="relative isolate min-h-[100svh] overflow-hidden">
+    <section id="hero" className="relative isolate min-h-[100svh] overflow-hidden">
       <div
         className="absolute inset-0 -z-20 will-change-transform"
         style={{ transform: `translate3d(0, ${offset * 0.28}px, 0) scale(1.1)` }}
@@ -49,14 +49,16 @@ export function HeroSection() {
           alt=""
           fill
           priority
-          className="object-cover"
+          className="ken-burns object-cover"
         />
       </div>
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,white_0%,rgba(255,255,255,0.7)_6%,transparent_22%)]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-[#0a0a0f]/70 to-[#0a0a0f]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f]/75 via-black/25 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0f]/65 to-[#0a0a0f]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f]/70 via-black/20 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[#0a0a0f]" />
+        {/* Soften only the header/logo strip of the hero image — no logo chip */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.78)_0%,rgba(255,255,255,0.35)_40%,transparent_100%)] sm:h-28" />
+        <div className="pointer-events-none absolute left-0 top-0 h-32 w-[min(380px,65%)] bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.5)_0%,transparent_72%)]" />
       </div>
 
       {/* Near full-bleed — fills the screen without big side voids */}
@@ -64,13 +66,13 @@ export function HeroSection() {
         className="relative mx-auto flex min-h-[100svh] w-full max-w-[1500px] flex-col justify-center px-5 pb-12 pt-24 sm:px-8 md:px-10 lg:px-12 xl:px-16"
         style={{ transform: `translate3d(0, ${offset * -0.08}px, 0)` }}
       >
-        <div className="grid w-full items-center gap-10 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:gap-12 lg:gap-16 xl:gap-20">
-          <div className="relative z-10 w-full max-w-2xl text-white">
+        <div className="grid w-full min-w-0 items-center gap-8 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:gap-12 lg:gap-16 xl:gap-20">
+          <div className="relative z-10 w-full min-w-0 max-w-2xl text-white">
             <p className="animate-in text-[13px] font-medium tracking-wide text-white/55">
               {hero.badge}
             </p>
 
-            <h1 className="animate-in animate-in-delay-1 mt-3 overflow-visible text-[clamp(2.25rem,4.6vw,3.6rem)] font-bold tracking-[-0.04em] leading-[1.15]">
+            <h1 className="animate-in animate-in-delay-1 mt-3 overflow-visible text-[clamp(1.85rem,6.5vw,3.6rem)] font-bold tracking-[-0.04em] leading-[1.15]">
               <span className="block">Why type when you</span>
               <span className="block">
                 can{" "}
@@ -126,7 +128,7 @@ export function HeroSection() {
           </div>
 
           <div
-            className="animate-in animate-in-delay-3 relative z-10 flex items-center justify-center md:justify-end"
+            className="animate-in animate-in-delay-3 relative z-10 mx-auto flex w-full min-w-0 justify-center md:mx-0 md:justify-end"
             style={{ transform: `translate3d(0, ${offset * -0.14}px, 0)` }}
           >
             <HeroMockup />

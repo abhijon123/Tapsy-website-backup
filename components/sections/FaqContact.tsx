@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { WordsPullUp } from "@/components/ui/words-pull-up";
+import { Reveal } from "@/components/ui/reveal";
 import { cn } from "@/lib/utils";
 
 const faqs = [
@@ -33,15 +34,15 @@ export function FaqContact() {
   const [sent, setSent] = useState(false);
 
   return (
-    <section id="faq" className="site-section bg-[#f7f7f8]">
+    <section id="faq" className="site-section overflow-x-clip bg-[#f7f7f8]">
       <div className="site-rail grid gap-12 lg:grid-cols-2 lg:gap-16 xl:gap-20">
-        {/* Contact */}
-        <div>
+        {/* Contact — slides in from left, meets FAQ */}
+        <Reveal from="left" className="min-w-0">
           <h2 className="text-[clamp(1.85rem,3vw,2.5rem)] font-extrabold tracking-[-0.04em] text-zinc-950">
-            <WordsPullUp text="We’d love to hear from you" className="!flex-nowrap" />
+            <WordsPullUp text="We’d love to hear from you" className="max-sm:flex-wrap sm:!flex-nowrap" />
           </h2>
           <p className="mt-3 max-w-lg text-[16px] leading-relaxed text-zinc-500 sm:text-[17px]">
-            Whether you’re curious about features, need support, or just want to share feedback — we’re
+            Whether you’re curious about features, need support, or just want to share feedback. We’re
             here to listen and help.
           </p>
 
@@ -78,12 +79,12 @@ export function FaqContact() {
               {sent ? "Sent" : "Submit"}
             </button>
           </form>
-        </div>
+        </Reveal>
 
-        {/* FAQ */}
-        <div className="min-w-0">
+        {/* FAQ — slides in from right, meets contact */}
+        <Reveal from="right" delay={0.06} className="min-w-0">
           <h2 className="text-[clamp(1.85rem,3vw,2.5rem)] font-extrabold tracking-[-0.04em] text-zinc-950">
-            <WordsPullUp text="Frequently asked questions" className="!flex-nowrap" />
+            <WordsPullUp text="Frequently asked questions" className="max-sm:flex-wrap sm:!flex-nowrap" />
           </h2>
           <p className="mt-3 max-w-lg text-[16px] leading-relaxed text-zinc-500 sm:text-[17px]">
             Got questions? Here are some quick answers to help you get started with Tapsy.
@@ -126,7 +127,7 @@ export function FaqContact() {
               );
             })}
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

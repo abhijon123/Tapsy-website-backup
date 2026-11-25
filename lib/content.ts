@@ -28,7 +28,7 @@ export interface VenueShot {
 /** Local demo reels under public/assets/videos */
 export const siteVideos = {
   hero: assetUrl("/assets/videos/Tapsy-video-1.mp4"),
-  beforeAfter: assetUrl("/assets/videos/tapsy-video-2.mp4"),
+  beforeAfter: assetUrl("/assets/videos/Tapsy-video-5.mp4"),
   orbit: assetUrl("/assets/videos/Tapsy-video-3.mp4"),
   studio: assetUrl("/assets/videos/Tapsy-video-4.mp4"),
   /** Publish board — distinct from hero reel */
@@ -76,7 +76,7 @@ export const siteContent = {
     badge: "How it works",
     heading: "From tap to trusted take.",
     subheading:
-      "Three moments. Zero fluff. Watch the product move as you scroll — record, rate the vibe, then grow a following that trusts what you show.",
+      "Three moments. Zero fluff. Watch the product move as you scroll record, rate the vibe, then grow a following that trusts what you show.",
     steps: [
       {
         stepNumber: "01",

@@ -1,7 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { TapsyPlayButton } from "@/components/ui/tapsy-play-button";
+import { useCallback, useEffect, useRef } from "react";
 import { AppBottomNav, AppTopBar } from "@/components/ui/app-chrome";
 import { cn } from "@/lib/utils";
 
@@ -15,13 +14,14 @@ type PhoneVideoProps = {
   autoPlay?: boolean;
   muted?: boolean;
   loop?: boolean;
+  /** @deprecated Play controls removed — videos always autoplay/loop when in view */
   playSize?: "sm" | "md" | "lg";
-  /** Hide play control (always looping demos) */
   hideControls?: boolean;
 };
 
 /**
  * Smooth phone reel player with Tapsy app chrome (Home top + scooped bottom nav).
+ * Auto-plays and loops when in view — no play button.
  */
 export function PhoneVideo({
   src,
@@ -29,31 +29,24 @@ export function PhoneVideo({
   title,
   place,
   className,
-  widthClassName = "w-[252px]",
+  widthClassName = "w-full max-w-[252px]",
   autoPlay = true,
   muted = true,
   loop = true,
-  playSize = "md",
-  hideControls = false,
 }: PhoneVideoProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const wantPlay = useRef(autoPlay);
   const inView = useRef(false);
-  const [pausedUI, setPausedUI] = useState(!autoPlay);
 
   const syncPlayback = useCallback(() => {
     const el = videoRef.current;
     if (!el) return;
 
     if (wantPlay.current && inView.current) {
-      const p = el.play();
-      if (p) {
-        p.then(() => setPausedUI(false)).catch(() => setPausedUI(true));
-      }
+      void el.play().catch(() => {});
     } else {
       el.pause();
-      setPausedUI(true);
     }
   }, []);
 
@@ -79,23 +72,16 @@ export function PhoneVideo({
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       wantPlay.current = false;
-      setPausedUI(true);
       videoRef.current?.pause();
     }
   }, []);
-
-  const toggle = () => {
-    if (hideControls) return;
-    wantPlay.current = !wantPlay.current;
-    syncPlayback();
-  };
 
   return (
     <div
       ref={rootRef}
       className={cn("hero-phone aspect-[9/19.2]", widthClassName, className)}
     >
-      <div className="hero-phone-screen group">
+      <div className="hero-phone-screen">
         <video
           ref={videoRef}
           src={src}
@@ -103,14 +89,11 @@ export function PhoneVideo({
           muted={muted}
           loop={loop}
           playsInline
+          autoPlay={autoPlay}
           preload="metadata"
           disablePictureInPicture
           disableRemotePlayback
           className="absolute inset-0 h-full w-full object-cover [transform:translateZ(0)]"
-          onPlaying={() => setPausedUI(false)}
-          onPause={() => {
-            if (!wantPlay.current || !inView.current) setPausedUI(true);
-          }}
         />
 
         {/* Bottom fade only — no top darken (keeps Home chrome flush / native) */}
@@ -118,26 +101,6 @@ export function PhoneVideo({
 
         <AppTopBar />
         <AppBottomNav />
-
-        {!hideControls && (
-          <button
-            type="button"
-            onClick={toggle}
-            className="absolute inset-0 z-10 flex items-center justify-center"
-            aria-label={pausedUI ? "Play video" : "Pause video"}
-          >
-            <span
-              className={cn(
-                "transition-opacity duration-200",
-                pausedUI
-                  ? "opacity-100"
-                  : "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
-              )}
-            >
-              <TapsyPlayButton playing={!pausedUI} size={playSize} />
-            </span>
-          </button>
-        )}
 
         {(title || place) && (
           <div className="pointer-events-none absolute bottom-[54px] left-0 right-0 z-20 p-3 text-left">

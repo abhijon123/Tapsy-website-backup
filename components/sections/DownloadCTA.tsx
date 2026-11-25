@@ -19,13 +19,13 @@ export function DownloadCTA() {
             alt=""
             fill
             priority
-            className="object-cover object-[72%_center] sm:object-center"
+            className="ken-burns object-cover object-[72%_center] sm:object-center"
             sizes="(max-width: 1280px) 100vw, 1280px"
           />
 
-          <div className="relative z-10 flex min-h-[320px] items-center px-8 py-12 sm:min-h-[380px] sm:px-12 sm:py-14 lg:min-h-[420px] lg:px-16 lg:py-16">
-            <div className="flex w-full max-w-[38rem] flex-col gap-5">
-              <h2 className="text-[clamp(1.75rem,3.2vw,2.35rem)] font-semibold tracking-[-0.02em] leading-[1.2] text-white drop-shadow-[0_1px_12px_rgba(76,29,149,0.35)]">
+          <div className="relative z-10 flex min-h-[320px] items-center px-5 py-10 sm:min-h-[380px] sm:px-12 sm:py-14 lg:min-h-[420px] lg:px-16 lg:py-16">
+            <div className="flex w-full max-w-[38rem] min-w-0 flex-col gap-5">
+              <h2 className="text-[clamp(1.5rem,4.2vw,2.35rem)] font-semibold tracking-[-0.02em] leading-[1.2] text-white drop-shadow-[0_1px_12px_rgba(76,29,149,0.35)]">
                 Show It.{" "}
                 <TypewriterText
                   gradient={false}
@@ -38,11 +38,9 @@ export function DownloadCTA() {
                   ]}
                 />
               </h2>
-              <p className="text-[16px] leading-[1.55] text-white/95 sm:text-[18px] sm:leading-[1.55]">
+              <p className="text-[15px] leading-[1.55] text-white/95 sm:text-[18px] sm:leading-[1.55]">
                 Your honest reel review will guide your community to the best
-                <br />
                 businesses and brands. Your video voice is powerful—on Tapsy, you
-                <br />
                 can use it.
               </p>
 

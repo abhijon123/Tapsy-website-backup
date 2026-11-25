@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
 interface WordsPullUpProps {
@@ -25,15 +25,8 @@ export function WordsPullUpMultiStyle({
   style?: React.CSSProperties;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.4 });
-  const [force, setForce] = useState(false);
+  const isInView = useInView(ref, { once: false, amount: 0.35 });
 
-  useEffect(() => {
-    const t = window.setTimeout(() => setForce(true), 700);
-    return () => window.clearTimeout(t);
-  }, []);
-
-  const show = isInView || force;
   const words: { word: string; className?: string }[] = [];
   segments.forEach((seg) => {
     seg.text.split(" ").forEach((w) => {
@@ -51,8 +44,8 @@ export function WordsPullUpMultiStyle({
         <motion.span
           key={w.word + i}
           initial={false}
-          animate={show ? { y: 0, opacity: 1 } : { y: 16, opacity: 0 }}
-          transition={{ duration: 0.45, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
+          animate={isInView ? { y: 0, opacity: 1 } : { y: 16, opacity: 0 }}
+          transition={{ duration: 0.45, delay: isInView ? i * 0.05 : 0, ease: [0.16, 1, 0.3, 1] }}
           className={`inline-block overflow-visible pb-[0.12em] leading-[1.2] ${w.className ?? ""}`}
           style={{ marginRight: "0.28em" }}
         >
@@ -70,16 +63,8 @@ export function WordsPullUp({
   style,
 }: WordsPullUpProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.4 });
-  const [force, setForce] = useState(false);
+  const isInView = useInView(ref, { once: false, amount: 0.35 });
   const words = text.split(" ");
-
-  useEffect(() => {
-    const t = window.setTimeout(() => setForce(true), 700);
-    return () => window.clearTimeout(t);
-  }, []);
-
-  const show = isInView || force;
 
   return (
     <div
@@ -93,8 +78,12 @@ export function WordsPullUp({
           <motion.span
             key={word + i}
             initial={false}
-            animate={show ? { y: 0, opacity: 1 } : { y: 16, opacity: 0 }}
-            transition={{ duration: 0.45, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
+            animate={isInView ? { y: 0, opacity: 1 } : { y: 16, opacity: 0 }}
+            transition={{
+              duration: 0.45,
+              delay: isInView ? i * 0.05 : 0,
+              ease: [0.16, 1, 0.3, 1],
+            }}
             className="relative inline-block overflow-visible pb-[0.12em] leading-[1.2]"
             style={{ marginRight: isLast ? 0 : "0.28em" }}
           >

@@ -18,7 +18,7 @@ import { Footer } from "@/components/sections/Footer";
 
 export default function Home() {
   return (
-    <main className="relative flex min-h-screen flex-col overflow-x-hidden bg-white">
+    <main className="relative flex min-h-screen flex-col overflow-x-clip bg-white">
       <Navbar />
       <HeroSection />
       <PublishEverywhere />

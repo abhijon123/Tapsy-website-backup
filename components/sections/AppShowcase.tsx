@@ -24,12 +24,28 @@ function circularOffset(from: number, to: number) {
   return d;
 }
 
-/** Ring layout — lighter 3D (less rotateY) so active reel stays smooth */
-function ringStyle(offset: number) {
+/** Ring layout — lighter 3D; compact offsets on narrow viewports */
+function ringStyle(offset: number, compact: boolean) {
   const abs = Math.abs(offset);
+  const side1 = compact ? 72 : 118;
+  const side2 = compact ? 110 : 190;
+  const far = compact ? 130 : 180;
+
+  if (compact && abs > 0) {
+    // Mobile: only the focused phone is fully visible
+    return {
+      x: offset > 0 ? side1 : -side1,
+      scale: 0.72,
+      rotateY: 0,
+      z: -60,
+      opacity: abs === 1 ? 0.35 : 0,
+      zIndex: abs === 1 ? 20 : 1,
+    };
+  }
+
   if (abs > 2) {
     return {
-      x: offset > 0 ? 180 : -180,
+      x: offset > 0 ? far : -far,
       scale: 0.58,
       rotateY: 0,
       z: -120,
@@ -42,7 +58,7 @@ function ringStyle(offset: number) {
   }
   if (abs === 1) {
     return {
-      x: offset > 0 ? 118 : -118,
+      x: offset > 0 ? side1 : -side1,
       scale: 0.84,
       rotateY: offset > 0 ? -6 : 6,
       z: -40,
@@ -51,7 +67,7 @@ function ringStyle(offset: number) {
     };
   }
   return {
-    x: offset > 0 ? 190 : -190,
+    x: offset > 0 ? side2 : -side2,
     scale: 0.7,
     rotateY: offset > 0 ? -8 : 8,
     z: -80,
@@ -62,9 +78,18 @@ function ringStyle(offset: number) {
 
 export function AppShowcase() {
   const [active, setActive] = useState(0);
+  const [compact, setCompact] = useState(false);
   const hoverPaused = useRef(false);
   const lockedUntil = useRef(0);
   const focused = STACK[active];
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setCompact(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   const focusPhone = (index: number) => {
     setActive(index);
@@ -94,7 +119,7 @@ export function AppShowcase() {
       <div className="py-16 sm:py-20">
         <div className="site-rail relative grid items-center gap-10 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.15fr)] lg:gap-8 xl:gap-12">
           <div className="relative z-10 min-w-0">
-            <Reveal className="overflow-visible">
+            <Reveal from="left" className="overflow-visible">
               <h2 className="type-section overflow-visible text-foreground [font-size:clamp(1.65rem,3.4vw,2.85rem)]">
                 <span className="block">Find top spots</span>
                 <span className="block overflow-visible italic text-gradient-tapsy">
@@ -132,106 +157,113 @@ export function AppShowcase() {
                 </motion.div>
               </AnimatePresence>
 
-              <p className="mt-6 text-[13px] font-medium text-zinc-400">
+              {/* <p className="mt-6 text-[13px] font-medium text-zinc-400">
                 Auto-rotates — tap a phone to focus it
-              </p>
+              </p> */}
             </Reveal>
           </div>
 
-          <div
-            className="relative isolate z-0 flex h-[440px] w-full items-center justify-center overflow-visible sm:h-[500px] lg:h-[540px] lg:justify-end"
-            style={{ perspective: 1600 }}
-            onMouseEnter={() => {
-              hoverPaused.current = true;
-            }}
-            onMouseLeave={() => {
-              hoverPaused.current = false;
-            }}
+          <Reveal
+            from="right"
+            delay={0.08}
+            className="relative isolate z-0 w-full min-w-0 pb-6 pt-2 sm:h-[500px] sm:pb-0 sm:pt-0 lg:h-[540px]"
           >
             <div
-              className="relative h-[min(500px,78vw)] w-[min(252px,42vw)] sm:h-[500px] sm:w-[252px]"
-              style={{ transformStyle: "preserve-3d" }}
+              className="relative flex h-full w-full min-w-0 items-center justify-center overflow-x-clip sm:overflow-visible lg:justify-end"
+              style={{ perspective: 1600 }}
+              onMouseEnter={() => {
+                hoverPaused.current = true;
+              }}
+              onMouseLeave={() => {
+                hoverPaused.current = false;
+              }}
             >
-              {items.map(({ venue, index, offset }) => {
-                const style = ringStyle(offset);
-                const isActive = offset === 0;
-                const phoneWidth = "w-[min(210px,38vw)] sm:w-[230px] lg:w-[252px]";
+              <div
+                className="relative aspect-[9/19.2] w-[min(252px,68vw)] sm:h-[500px] sm:w-[252px] sm:aspect-auto"
+                style={{ transformStyle: "preserve-3d" }}
+              >
+                {items.map(({ venue, index, offset }) => {
+                  const style = ringStyle(offset, compact);
+                  const isActive = offset === 0;
+                  const phoneWidth =
+                    "w-[min(210px,70vw)] sm:w-[230px] lg:w-[252px]";
 
-                return (
-                  <motion.div
-                    key={venue.id}
-                    className={cn(
-                      "absolute left-0 top-0 origin-center",
-                      Math.abs(offset) > 2 && "pointer-events-none"
-                    )}
-                    style={{ zIndex: style.zIndex }}
-                    initial={false}
-                    animate={{
-                      x: style.x,
-                      z: style.z,
-                      scale: style.scale,
-                      rotateY: style.rotateY,
-                      opacity: style.opacity,
-                      zIndex: style.zIndex,
-                    }}
-                    transition={{
-                      duration: 0.55,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                  >
-                    {isActive && venue.video ? (
-                      <PhoneVideo
-                        src={venue.video}
-                        poster={venue.image}
-                        title={venue.title}
-                        place={venue.place}
-                        widthClassName={cn(
-                          phoneWidth,
-                          "shadow-[0_28px_60px_-18px_rgba(0,0,0,0.55)] ring-2 ring-white/40"
-                        )}
-                        autoPlay
-                        muted
-                        loop
-                        playSize="sm"
-                      />
-                    ) : (
-                      <button
-                        type="button"
-                        aria-label={`Focus ${venue.title}`}
-                        onClick={() => focusPhone(index)}
-                        className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400"
-                      >
-                        <div className={cn("hero-phone aspect-[9/19.2] shadow-lg", phoneWidth)}>
-                          <div className="hero-phone-screen">
-                            <Image
-                              src={venue.image}
-                              alt={venue.title}
-                              fill
-                              className="object-cover"
-                              sizes="252px"
-                            />
-                            <div className="absolute inset-0 bg-black/25 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
-                            <AppTopBar />
-                            <AppBottomNav />
-                            <div className="absolute bottom-[54px] left-0 right-0 p-3 text-left">
-                              <p className="truncate text-[12px] font-bold text-white">
-                                {venue.title}
-                              </p>
-                              <p className="truncate text-[10px] text-white/70">{venue.place}</p>
+                  return (
+                    <motion.div
+                      key={venue.id}
+                      className={cn(
+                        "absolute left-0 top-0 origin-center",
+                        Math.abs(offset) > 2 && "pointer-events-none"
+                      )}
+                      style={{ zIndex: style.zIndex }}
+                      initial={false}
+                      animate={{
+                        x: style.x,
+                        z: style.z,
+                        scale: style.scale,
+                        rotateY: style.rotateY,
+                        opacity: style.opacity,
+                        zIndex: style.zIndex,
+                      }}
+                      transition={{
+                        duration: 0.55,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                    >
+                      {isActive && venue.video ? (
+                        <PhoneVideo
+                          src={venue.video}
+                          poster={venue.image}
+                          title={venue.title}
+                          place={venue.place}
+                          widthClassName={cn(
+                            phoneWidth,
+                            "shadow-[0_28px_60px_-18px_rgba(0,0,0,0.55)] ring-2 ring-white/40"
+                          )}
+                          autoPlay
+                          muted
+                          loop
+                          playSize="sm"
+                        />
+                      ) : (
+                        <button
+                          type="button"
+                          aria-label={`Focus ${venue.title}`}
+                          onClick={() => focusPhone(index)}
+                          className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400"
+                        >
+                          <div className={cn("hero-phone aspect-[9/19.2] shadow-lg", phoneWidth)}>
+                            <div className="hero-phone-screen">
+                              <Image
+                                src={venue.image}
+                                alt={venue.title}
+                                fill
+                                className="object-cover"
+                                sizes="252px"
+                              />
+                              <div className="absolute inset-0 bg-black/25 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
+                              <AppTopBar />
+                              <AppBottomNav />
+                              <div className="absolute bottom-[54px] left-0 right-0 p-3 text-left">
+                                <p className="truncate text-[12px] font-bold text-white">
+                                  {venue.title}
+                                </p>
+                                <p className="truncate text-[10px] text-white/70">{venue.place}</p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </button>
-                    )}
-                  </motion.div>
-                );
-              })}
+                        </button>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
 
-      <div className="site-rail pb-16 sm:pb-20">
+      <div className="site-rail mt-4 pb-16 pt-2 sm:mt-0 sm:pb-20 sm:pt-0">
         <StudioBoard />
       </div>
     </section>

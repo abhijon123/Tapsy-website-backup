@@ -54,16 +54,22 @@ function PersonCard({
   onToggle: () => void;
 }) {
   return (
-    <article className="relative h-[280px] w-[210px] shrink-0 overflow-hidden rounded-[22px] bg-zinc-100 transition duration-300 hover:-translate-y-1.5 sm:h-[320px] sm:w-[230px]">
-      <Image src={person.image} alt={person.name} fill className="object-cover" />
-      <div className="absolute inset-x-3 bottom-3 flex items-center justify-between rounded-2xl bg-white px-3 py-2 shadow-lg">
+    <article className="group relative h-[280px] w-[min(210px,72vw)] shrink-0 overflow-hidden rounded-[22px] bg-zinc-100 shadow-[0_18px_40px_-24px_rgba(15,10,40,0.35)] transition duration-300 hover:-translate-y-1.5 sm:h-[320px] sm:w-[230px]">
+      <Image
+        src={person.image}
+        alt={person.name}
+        fill
+        className="media-zoom object-cover"
+        sizes="230px"
+      />
+      <div className="absolute inset-x-2.5 bottom-2.5 flex items-center justify-between gap-2 rounded-2xl bg-white px-2.5 py-2 shadow-lg sm:inset-x-3 sm:bottom-3 sm:px-3">
         <div className="min-w-0">
-          <p className="truncate text-[14px] font-bold text-zinc-900">{person.name}</p>
-          <p className="text-[11px] text-zinc-400">{person.role}</p>
+          <p className="truncate text-[13px] font-bold text-zinc-900 sm:text-[14px]">{person.name}</p>
+          <p className="truncate text-[11px] text-zinc-400">{person.role}</p>
         </div>
         <button
           onClick={onToggle}
-          className={`shrink-0 rounded-full px-3 py-1 text-[12px] font-bold text-white transition ${
+          className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold text-white transition sm:px-3 sm:text-[12px] ${
             following ? "bg-zinc-800" : "bg-gradient-tapsy"
           }`}
         >

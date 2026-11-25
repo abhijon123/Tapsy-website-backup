@@ -62,11 +62,11 @@ export function ScrollySteps() {
         }}
       />
 
-      <div className="relative mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-10">
+      <div className="site-rail relative">
         <Reveal className="mx-auto mb-6 max-w-2xl text-center sm:mb-7">
           <h2 className="type-section text-foreground">
             <span className="block">From tap to</span>
-            <span className="block whitespace-nowrap italic text-gradient-tapsy">
+            <span className="block italic text-gradient-tapsy max-sm:whitespace-normal sm:whitespace-nowrap">
               trusted take.
             </span>
           </h2>
@@ -149,8 +149,8 @@ export function ScrollySteps() {
             </div>
 
             {/* Right: phone demo */}
-            <div className="order-1 flex justify-center lg:order-2 lg:justify-end">
-              <div className="phone-frame aspect-[9/18.5] w-[250px] sm:w-[270px] lg:w-[290px]">
+            <div className="order-1 flex w-full min-w-0 justify-center lg:order-2 lg:justify-end">
+              <div className="phone-frame aspect-[9/18.5] w-[min(250px,72vw)] sm:w-[270px] lg:w-[290px]">
                 <div className="absolute left-1/2 top-5 z-30 h-4 w-20 -translate-x-1/2 rounded-full bg-black" />
                 <div className="phone-screen flex flex-col p-4 text-white">
                   <AnimatePresence mode="wait">

@@ -10,6 +10,8 @@ type DistributeBeamsProps = {
   activeCount: number;
   strokeColors?: string[];
   className?: string;
+  /** Divide measured coords when parent uses CSS transform: scale(...) */
+  coordScale?: number;
 };
 
 type BeamPath = {
@@ -29,6 +31,7 @@ export function DistributeBeams({
   activeCount,
   strokeColors,
   className,
+  coordScale = 1,
 }: DistributeBeamsProps) {
   const gid = useId().replace(/:/g, "");
   const [paths, setPaths] = useState<BeamPath[]>([]);
@@ -39,20 +42,21 @@ export function DistributeBeams({
     const dests = destRefs.current;
     if (!container || !hub || !dests?.length) return;
 
+    const s = coordScale || 1;
     const c = container.getBoundingClientRect();
     const h = hub.getBoundingClientRect();
 
-    // Origin: vertical mid of hub, on its right edge
-    const x1 = h.right - c.left;
-    const y1 = h.top + h.height / 2 - c.top;
+    // Origin: vertical mid of hub, on its right edge (unscale for CSS-transformed parents)
+    const x1 = (h.right - c.left) / s;
+    const y1 = (h.top + h.height / 2 - c.top) / s;
 
     const next: BeamPath[] = dests.map((el, i) => {
       if (!el) {
         return { d: "", length: 0, color: strokeColors?.[i] };
       }
       const r = el.getBoundingClientRect();
-      const x2 = r.left - c.left;
-      const y2 = r.top + r.height / 2 - c.top;
+      const x2 = (r.left - c.left) / s;
+      const y2 = (r.top + r.height / 2 - c.top) / s;
 
       // Bundle near hub, then fan — soft cubic like link.me
       const dx = x2 - x1;
@@ -69,7 +73,7 @@ export function DistributeBeams({
     });
 
     setPaths(next);
-  }, [containerRef, hubRef, destRefs, strokeColors]);
+  }, [containerRef, hubRef, destRefs, strokeColors, coordScale]);
 
   useEffect(() => {
     let raf = 0;
