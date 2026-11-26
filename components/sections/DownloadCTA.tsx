@@ -40,7 +40,7 @@ export function DownloadCTA() {
               </h2>
               <p className="text-[15px] leading-[1.55] text-white/95 sm:text-[18px] sm:leading-[1.55]">
                 Your honest reel review will guide your community to the best
-                businesses and brands. Your video voice is powerful—on Tapsy, you
+                businesses and brands. Your video voice is powerful. On Tapsy, you
                 can use it.
               </p>
 

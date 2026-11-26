@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "About Tapsy | Video Review Platform for Local Businesses",
     description:
-      "Built for the hardworking small guy — authentic 30-second video reviews that help local businesses get discovered and trusted.",
+      "Built for the hardworking small guy. Authentic 30-second video reviews that help local businesses get discovered and trusted.",
     url: "https://tapsy.app/about",
     images: [
       {

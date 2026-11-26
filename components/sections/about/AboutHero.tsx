@@ -21,17 +21,21 @@ export function AboutHero() {
         style={{ transform: `translate3d(0, ${offset * 0.28}px, 0) scale(1.1)` }}
       >
         <Image
-          src={assetUrl("/assets/hero-atmosphere.jpg")}
+          src={assetUrl("/assets/nightlife-vibe.jpg")}
           alt=""
           fill
           priority
-          className="ken-burns object-cover"
+          className="ken-burns object-cover object-[center_35%]"
         />
       </div>
+      {/* Same seamless header polish as home — one mist, not split zones */}
       <div className="absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0f]/65 to-[#0a0a0f]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f]/70 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0a0a0f]/50 to-[#0a0a0f]/92" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a0f]/60 via-black/15 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[#0a0a0f]" />
+        {/* Soft full-width veil so bokeh doesn’t blow out white nav */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[linear-gradient(to_bottom,rgba(10,10,15,0.28)_0%,rgba(10,10,15,0.1)_50%,transparent_100%)] sm:h-32" />
+        {/* Home-style logo soften — continuous strip + soft left glow */}
         <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.78)_0%,rgba(255,255,255,0.35)_40%,transparent_100%)] sm:h-28" />
         <div className="pointer-events-none absolute left-0 top-0 h-32 w-[min(380px,65%)] bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.5)_0%,transparent_72%)]" />
       </div>

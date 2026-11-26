@@ -8,10 +8,10 @@ import { WordsPullUp } from "@/components/ui/words-pull-up";
 import { assetUrl } from "@/lib/utils";
 
 const story = [
-  "I’m Tommy Diehl, founder of Tapsy. After forty years running a small business, I got tired of watching the little guy play by rules built by someone else. Big platforms take a piece, control visibility, and make it harder for storefront businesses and independent professionals to stand out. So I built Tapsy — a better way to be seen, discovered, and trusted through real video.",
-  "Tapsy uses simple, state-of-the-art 30-second short-form videos that are authentic, current, and built for the way people communicate today, without complicated pricing. It’s simple: pure video interaction, no clutter — just tap and see. For gig professionals, clients can find you, watch you, hire you, and pay you without lead fees. For physical businesses, customers can discover what you offer, experience your vibe, and share that experience through video.",
-  "I believe the best way to know if a business is good at what they do is to see it for yourself — meet the owners, watch their work, and hear from real customers. Not filtered photos, carefully written claims, or anonymous star ratings, but real video of real people doing real work.",
-  "Tapsy is lighthearted on purpose because finding a great business or service provider shouldn’t feel like a chore. While the rest of the internet pulls people into endless entertainment, I wanted to create something different: scrolling with purpose. I’m for the hardworking small guy — the owners who actually care, show up, do the job right, and keep their customers happy.",
+  "I’m Tommy Diehl, founder of Tapsy. After forty years running a small business, I got tired of watching the little guy play by rules built by someone else. Big platforms take a piece, control visibility, and make it harder for storefront businesses and independent professionals to stand out. So I built Tapsy, a better way to be seen, discovered, and trusted through real video.",
+  "Tapsy uses simple, state-of-the-art 30-second short-form videos that are authentic, current, and built for the way people communicate today, without complicated pricing. It’s simple: pure video interaction, no clutter, just tap and see. For gig professionals, clients can find you, watch you, hire you, and pay you without lead fees. For physical businesses, customers can discover what you offer, experience your vibe, and share that experience through video.",
+  "I believe the best way to know if a business is good at what they do is to see it for yourself: meet the owners, watch their work, and hear from real customers. Not filtered photos, carefully written claims, or anonymous star ratings, but real video of real people doing real work.",
+  "Tapsy is lighthearted on purpose because finding a great business or service provider shouldn’t feel like a chore. While the rest of the internet pulls people into endless entertainment, I wanted to create something different: scrolling with purpose. I’m for the hardworking small guy, the owners who actually care, show up, do the job right, and keep their customers happy.",
 ];
 
 export function AboutFounder() {
@@ -22,10 +22,10 @@ export function AboutFounder() {
       <div className="site-section">
         <div className="site-rail">
           <Reveal className="mx-auto mb-10 max-w-5xl text-center sm:mb-14">
-            <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-fuchsia-600/80">
+            <p className="text-[12px] font-bold uppercase tracking-[0.18em] text-violet-600">
               The founder
             </p>
-            <h2 className="mt-3 text-[clamp(1.9rem,4vw,3rem)] font-extrabold tracking-[-0.04em] text-zinc-950">
+            <h2 className="type-section mt-3 text-foreground">
               <WordsPullUp
                 text="Built for the hardworking small guy"
                 className="justify-center max-lg:flex-wrap lg:!flex-nowrap"
@@ -100,7 +100,7 @@ export function AboutFounder() {
             <div className="min-w-0 space-y-5">
               {story.map((paragraph, i) => (
                 <BlurFade key={i} delay={0.05 + i * 0.06} y={20}>
-                  <p className="text-[15px] leading-relaxed text-zinc-600 sm:text-[16px] sm:leading-[1.7]">
+                  <p className="text-[16px] leading-[1.65] text-zinc-500 sm:text-[17px]">
                     {paragraph}
                   </p>
                 </BlurFade>

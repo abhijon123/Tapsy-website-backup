@@ -25,7 +25,7 @@ function circularOffset(from: number, to: number) {
   return d;
 }
 
-/** Ring layout — lighter 3D; compact offsets on narrow viewports */
+/** Ring layout, lighter 3D; compact offsets on narrow viewports */
 function ringStyle(offset: number, compact: boolean) {
   const abs = Math.abs(offset);
   const side1 = compact ? 72 : 118;
@@ -93,13 +93,13 @@ export function AppShowcase() {
 
   const focusPhone = (index: number) => {
     setActive(index);
-    // Keep clicked focus intact — auto-scroll waits before continuing
+    // Keep clicked focus intact, auto-scroll waits before continuing
     lockedUntil.current = Date.now() + RESUME_MS;
   };
 
   useEffect(() => {
     const id = setInterval(() => {
-      // Only pause after an explicit click/tap — hover never stops rotation
+      // Only pause after an explicit click/tap, hover never stops rotation
       if (Date.now() < lockedUntil.current) return;
       setActive((i) => (i + 1) % N);
     }, AUTO_MS);
@@ -159,7 +159,7 @@ export function AppShowcase() {
               </AnimatePresence>
 
               {/* <p className="mt-6 text-[13px] font-medium text-zinc-400">
-                Auto-rotates — tap a phone to focus it
+                Auto-rotates. Tap a phone to focus it
               </p> */}
             </Reveal>
           </div>
@@ -239,7 +239,7 @@ export function AppShowcase() {
                               <div className="absolute inset-0 bg-black/25 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
                               <AppTopBar />
                               <AppBottomNav />
-                              <div className="absolute bottom-[54px] left-0 right-0 p-3 text-left">
+                              <div className="absolute bottom-[48px] left-0 right-0 p-3 text-left">
                                 <p className="truncate text-[12px] font-bold text-white">
                                   {venue.title}
                                 </p>

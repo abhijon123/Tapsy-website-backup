@@ -76,12 +76,18 @@ type Mode = "auto" | "manual";
 type Phase = "compose" | "peeling" | "distribute" | "done";
 type FlyRect = { x: number; y: number; w: number; h: number };
 
-const COMPOSE_MS = 2800;
-/** Calm peel — link.me pace */
-const PEEL_MS = 2200;
-const LAYOUT_SETTLE_MS = 1200;
-const STEP_MS = 400;
+const COMPOSE_MS = 3200;
+/**
+ * Same duration for phone slide and post peel (matched pace).
+ * Slide finishes first, then we measure the settled hub and peel into it.
+ * Measuring mid-slide made the card miss the dashed box.
+ */
+const PEEL_MS = 2600;
+const LAYOUT_SETTLE_MS = PEEL_MS;
+const STEP_MS = 450;
 const HOLD_MS = 3000;
+/** Fade distribute out before layout reset, kills the “wall” flash */
+const EXIT_FADE_MS = 520;
 
 const easeCalm = [0.16, 1, 0.3, 1] as const;
 
@@ -91,6 +97,7 @@ export function PublishEverywhere() {
   const [published, setPublished] = useState<number[]>([]);
   const [cycle, setCycle] = useState(0);
   const [clickPulse, setClickPulse] = useState(false);
+  const [exiting, setExiting] = useState(false);
   const [flyFrom, setFlyFrom] = useState<FlyRect | null>(null);
   const [flyTo, setFlyTo] = useState<FlyRect | null>(null);
 
@@ -106,7 +113,7 @@ export function PublishEverywhere() {
   /**
    * Fit any viewport: keep exact desktop stage geometry + timing,
    * CSS-scale the board whenever its column is narrower than the design width.
-   * (Fixes phones AND small/medium monitors — large screens stay scale 1.)
+   * (Fixes phones AND small/medium monitors, large screens stay scale 1.)
    */
   const STAGE_DESIGN_W = 640;
   const [fit, setFit] = useState({ scale: 1, height: 0 });
@@ -151,6 +158,7 @@ export function PublishEverywhere() {
     setPhase("compose");
     setPublished([]);
     setClickPulse(false);
+    setExiting(false);
     setFlyFrom(null);
     setFlyTo(null);
 
@@ -164,7 +172,7 @@ export function PublishEverywhere() {
       window.setTimeout(() => run(() => setClickPulse(true)), COMPOSE_MS - 420)
     );
 
-    // Expand side-by-side first so measure happens in the final layout
+    // 1) Phone slides left (PEEL_MS). 2) Measure settled hub. 3) Peel at same PEEL_MS pace.
     timers.push(
       window.setTimeout(() => {
         run(() => {
@@ -174,7 +182,7 @@ export function PublishEverywhere() {
       }, COMPOSE_MS)
     );
 
-    // Measure phone → hub after settle, then start the calm direct fly
+    // Measure only after layout has settled, card must land exactly in the hub box
     timers.push(
       window.setTimeout(() => {
         run(() => {
@@ -223,8 +231,16 @@ export function PublishEverywhere() {
 
     timers.push(window.setTimeout(() => run(() => setPhase("done")), doneAt));
 
+    // Fade the distribute panel out while it stays in flex flow, then reset.
+    // Skipping this made it jump to `absolute` at full opacity → “wall” flash.
     timers.push(
-      window.setTimeout(() => setCycle((c) => c + 1), doneAt + HOLD_MS)
+      window.setTimeout(() => run(() => setExiting(true)), doneAt + HOLD_MS)
+    );
+    timers.push(
+      window.setTimeout(
+        () => setCycle((c) => c + 1),
+        doneAt + HOLD_MS + EXIT_FADE_MS
+      )
     );
 
     return () => timers.forEach((t) => window.clearTimeout(t));
@@ -248,11 +264,13 @@ export function PublishEverywhere() {
   }, [phase, cycle]);
 
   const composing = phase === "compose";
-  const showDistribute = phase !== "compose";
+  /** Keep panel in flex flow until after exit fade (avoids wall flash on reset) */
+  const panelInFlow = phase !== "compose";
+  const panelVisible = panelInFlow && !exiting;
   /** Flying only once both endpoints exist (after layout settle) */
   const flying = phase === "peeling" && !!flyFrom && !!flyTo;
   const videoLeftPhone = flying || phase === "distribute" || phase === "done";
-  const settled = phase === "distribute" || phase === "done";
+  const settled = (phase === "distribute" || phase === "done") && !exiting;
   const fanLive = settled;
   const allDone = phase === "done" || published.length >= destinations.length;
   const selectedCount = mode === "auto" ? destinations.length : 4;
@@ -283,8 +301,8 @@ export function PublishEverywhere() {
         <div
           className={cn(
             "grid w-full min-w-0 items-center gap-10 lg:gap-14 xl:gap-20",
-            /* Side-by-side only on large screens — medium monitors get full-width board */
-            showDistribute
+            /* Side-by-side only on large screens, medium monitors get full-width board */
+            panelInFlow
               ? "xl:grid-cols-[minmax(0,0.7fr)_minmax(0,1.4fr)]"
               : "xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]"
           )}
@@ -325,7 +343,7 @@ export function PublishEverywhere() {
               <p className="mt-3 text-[15px] leading-relaxed text-white/60">
                 {mode === "auto"
                   ? "The reel starts in New Post. On publish it leaves the composer as its own card, then beams into Discover, followers, nearby, trending, and categories."
-                  : "Same peel-out — you choose which feeds get a spoke. The clip still comes out of the post as one hub first."}
+                  : "Same peel-out, you choose which feeds get a spoke. The clip still comes out of the post as one hub first."}
               </p>
 
               <ul className="mt-6 space-y-3">
@@ -392,7 +410,7 @@ export function PublishEverywhere() {
                     : undefined
                 }
               >
-                {/* Real stack phone — layout anim slides calmly left on Post */}
+                {/* Real stack phone, layout anim slides calmly left on Post */}
                 <motion.div
                   layout
                   className={cn(
@@ -405,9 +423,9 @@ export function PublishEverywhere() {
                     scale: composing ? 1 : 0.98,
                   }}
                   transition={{
-                    layout: { duration: 1.2, ease: easeCalm },
-                    opacity: { duration: 0.6, ease: easeCalm },
-                    scale: { duration: 0.6, ease: easeCalm },
+                    layout: { duration: PEEL_MS / 1000, ease: easeCalm },
+                    opacity: { duration: 0.7, ease: easeCalm },
+                    scale: { duration: 0.7, ease: easeCalm },
                   }}
                 >
                   <div
@@ -419,7 +437,7 @@ export function PublishEverywhere() {
                     )}
                   >
                     <div className="hero-phone-screen">
-                      {/* Full-bleed media — stays until fly starts, then Posted */}
+                      {/* Full-bleed media, stays until fly starts, then Posted */}
                       <div ref={composerMediaRef} className="absolute inset-0">
                         {!videoLeftPhone ? (
                           <AlwaysPlayingVideo videoRef={videoRef} />
@@ -446,8 +464,8 @@ export function PublishEverywhere() {
                       <AppTopBar title="New Post" />
                       <AppBottomNav />
 
-                      {/* New Post sheet — sits above bottom nav */}
-                      <div className="absolute inset-x-0 bottom-[52px] z-20 px-2.5 pb-2 pt-6">
+                      {/* New Post sheet, sits above bottom nav */}
+                      <div className="absolute inset-x-0 bottom-[48px] z-20 px-2.5 pb-1.5 pt-6">
                         <div className="absolute left-2.5 right-2.5 top-0 flex items-center justify-between">
                           <div className="flex items-center gap-1.5 rounded-full bg-black/40 px-2 py-1 backdrop-blur-md">
                             <span className="h-4 w-4 rounded-full bg-gradient-to-br from-violet-500 to-[#FF6A3D]" />
@@ -460,7 +478,7 @@ export function PublishEverywhere() {
 
                         <div className="mt-7 rounded-[1.05rem] border border-white/10 bg-black/50 p-2.5 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.65)] backdrop-blur-xl">
                           <p className="text-[10px] leading-snug text-white/80">
-                            Just tapped this spot — vibe check for anyone nearby…
+                            Just tapped this spot, vibe check for anyone nearby…
                           </p>
 
                           <p className="mb-1 mt-2 text-[8px] font-semibold uppercase tracking-wider text-white/40">
@@ -532,22 +550,25 @@ export function PublishEverywhere() {
                   </div>
                 </motion.div>
 
-                {/* Distribute — keep mounted via opacity for smoother loops */}
+                {/* Distribute, fade out in-flow before leaving layout (no wall on reset) */}
                 <motion.div
                   initial={false}
                   animate={{
-                    opacity: showDistribute ? 1 : 0,
-                    x: showDistribute ? 0 : 24,
-                    pointerEvents: showDistribute ? "auto" : "none",
+                    opacity: panelVisible ? 1 : 0,
+                    x: panelVisible ? 0 : 20,
+                    pointerEvents: panelVisible ? "auto" : "none",
                   }}
-                  transition={{ duration: 1.15, ease: easeCalm }}
+                  transition={{
+                    duration: panelVisible ? PEEL_MS / 1000 : EXIT_FADE_MS / 1000,
+                    ease: easeCalm,
+                  }}
                   className={cn(
                     "relative z-10 min-w-0",
-                    showDistribute
+                    panelInFlow
                       ? "flex-1"
                       : "pointer-events-none absolute right-0 top-1/2 w-[min(100%,420px)] -translate-y-1/2 opacity-0"
                   )}
-                  aria-hidden={!showDistribute}
+                  aria-hidden={!panelVisible}
                 >
                   <div
                     ref={fanRef}
@@ -559,7 +580,7 @@ export function PublishEverywhere() {
                         fanLive ? "opacity-100" : "opacity-0"
                       )}
                     >
-                      {showDistribute && (
+                      {panelVisible && (
                         <DistributeBeams
                           key={cycle}
                           containerRef={fanRef}
@@ -609,7 +630,7 @@ export function PublishEverywhere() {
 
                     <div
                       className={cn(
-                        /* flex-1 only on xl — below that intrinsic width so justify-center works */
+                        /* flex-1 only on xl, below that intrinsic width so justify-center works */
                         "relative z-10 flex min-w-[210px] shrink-0 flex-col justify-center gap-2.5 transition-opacity duration-400 xl:flex-1 xl:shrink",
                         fanLive ? "opacity-100" : "opacity-35"
                       )}

@@ -2,8 +2,9 @@
 
 import { Reveal } from "@/components/ui/reveal";
 
+/** Same as TrustBanner — purple → magenta → orange */
 const BANNER_GRADIENT =
-  "bg-[linear-gradient(90deg,#7C3AED_0%,#4F46E5_28%,#2563EB_52%,#F97316_100%)]";
+  "bg-[linear-gradient(90deg,#4C1D95_0%,#A21CAF_50%,#FB923C_100%)]";
 
 function AboutGradientBanner({
   id,
@@ -21,10 +22,10 @@ function AboutGradientBanner({
         className={`relative overflow-hidden rounded-[28px] px-6 py-10 text-white sm:px-10 sm:py-12 lg:min-h-[200px] lg:px-14 lg:py-14 ${BANNER_GRADIENT}`}
       >
         <div className="relative z-10 w-full max-w-none">
-          <h2 className="text-[clamp(1.65rem,3.4vw,2.5rem)] font-extrabold tracking-[-0.03em] leading-[1.15] text-white">
+          <h2 className="text-[clamp(1.9rem,3.8vw,3rem)] font-extrabold tracking-[-0.04em] leading-[1.15] text-white">
             {title}
           </h2>
-          <p className="mt-3 max-w-[72rem] text-[15px] leading-relaxed text-white sm:mt-4 sm:text-[17px] sm:leading-[1.65] lg:text-[18px] xl:max-w-none">
+          <p className="mt-3 max-w-[72rem] text-[15px] leading-relaxed text-white/85 sm:mt-4 sm:text-[17px] xl:max-w-none">
             {body}
           </p>
         </div>

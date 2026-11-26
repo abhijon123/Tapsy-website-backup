@@ -31,7 +31,7 @@ export const siteVideos = {
   beforeAfter: assetUrl("/assets/videos/Tapsy-video-5.mp4"),
   orbit: assetUrl("/assets/videos/Tapsy-video-3.mp4"),
   studio: assetUrl("/assets/videos/Tapsy-video-4.mp4"),
-  /** Publish board — distinct from hero reel */
+  /** Publish board, distinct from hero reel */
   publish: assetUrl("/assets/videos/tapsy-video-2.mp4"),
   stack: [
     assetUrl("/assets/videos/Tapsy-video-1.mp4"),
@@ -52,7 +52,7 @@ export const siteLinks = {
 
 export const siteContent = {
   meta: {
-    title: "Tapsy | Why Type When You Can Tap? – Authentic 30s Video Reviews",
+    title: "Tapsy | Why Type When You Can Tap? Authentic 30s Video Reviews",
     description:
       "Forget outdated text and long paragraphs. Tapsy serves up 30-second authentic video reels of restaurants, cafes, and local spots. Fast, fun, and trustworthy.",
   },
@@ -84,14 +84,14 @@ export const siteContent = {
         title: "Tap to record",
         subtitle: "30 seconds. One honest take.",
         details:
-          "Open the camera in a single tap. Capture the room, service, plating, and energy in HD — no filters, no editing drama, just what it actually felt like being there.",
+          "Open the camera in a single tap. Capture the room, service, plating, and energy in HD, no filters, no editing drama, just what it actually felt like being there.",
         bullets: [
           "Strict 30-second clip limit",
           "Tap-to-focus viewfinder",
           "Works offline until you post",
           "Auto place detection when you’re on-site",
         ],
-        tip: "Keep the phone steady and talk naturally — authenticity beats polish.",
+        tip: "Keep the phone steady and talk naturally, authenticity beats polish.",
       },
       {
         stepNumber: "02",
@@ -114,14 +114,14 @@ export const siteContent = {
         title: "Get social",
         subtitle: "Become the trusted voice.",
         details:
-          "Build a following of foodies and explorers who trust your eye. Earn badges, climb neighborhood ranks, and help your city discover better nights out — from one honest reel.",
+          "Build a following of foodies and explorers who trust your eye. Earn badges, climb neighborhood ranks, and help your city discover better nights out, from one honest reel.",
         bullets: [
           "Creator profile & badges",
           "Neighborhood reputation",
           "Share to every feed",
           "Followers who act on your takes",
         ],
-        tip: "Consistency compounds — a few real reviews a week builds trust fast.",
+        tip: "Consistency compounds, a few real reviews a week builds trust fast.",
       },
     ],
   },
@@ -129,7 +129,7 @@ export const siteContent = {
     badge: "Creator community",
     heading: "Real people. Real places.",
     description:
-      "Creators on Tapsy don’t write essays — they show you the night. Follow the voices that match your taste.",
+      "Creators on Tapsy don’t write essays, they show you the night. Follow the voices that match your taste.",
     creators: [
       {
         id: "shawn",
@@ -317,7 +317,7 @@ export const siteContent = {
     {
       title: "Interactive mood slider",
       description:
-        "Rate from Okay to Outstanding with tactile feedback — not another star spreadsheet.",
+        "Rate from Okay to Outstanding with tactile feedback, not another star spreadsheet.",
       tag: "Tactile rating",
       icon: "Sliders",
       image:
@@ -335,7 +335,7 @@ export const siteContent = {
     {
       title: "Creator studio",
       description:
-        "Smart trim, audio clean, overlays, and badges — without leaving the app.",
+        "Smart trim, audio clean, overlays, and badges, without leaving the app.",
       tag: "Pro tools",
       icon: "Sparkles",
       image: assetUrl("/assets/creator-recording-feature.png"),

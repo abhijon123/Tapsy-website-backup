@@ -52,7 +52,7 @@ export function ScrollySteps() {
 
   return (
     <section id="how-it-works" className="site-section relative overflow-hidden bg-background">
-      {/* Soft full-bleed wash — atmosphere instead of empty white */}
+      {/* Soft full-bleed wash, atmosphere instead of empty white */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -64,18 +64,16 @@ export function ScrollySteps() {
 
       <div className="site-rail relative">
         <Reveal className="mx-auto mb-6 max-w-2xl text-center sm:mb-7">
-          <h2 className="type-section text-foreground">
-            <span className="block">From tap to</span>
-            <span className="block italic text-gradient-tapsy max-sm:whitespace-normal sm:whitespace-nowrap">
-              trusted take.
-            </span>
+          <h2 className="type-section whitespace-nowrap text-foreground max-sm:whitespace-normal">
+            From tap to{" "}
+            <span className="italic text-gradient-tapsy">trusted take.</span>
           </h2>
           <p className="type-lead mx-auto mt-3">
             {stepsIntro.subheading}
           </p>
         </Reveal>
 
-        {/* Compact auto-playing stage — wider, denser composition */}
+        {/* Compact auto-playing stage, wider, denser composition */}
         <div className="relative">
           <div className="flex items-center">
             <div className="mx-auto grid w-full grid-cols-1 items-center gap-7 lg:grid-cols-2 lg:gap-8 xl:gap-10">
@@ -115,7 +113,7 @@ export function ScrollySteps() {
                     ))}
                   </ul>
                   <p className="mt-5 max-w-md text-[13px] leading-relaxed text-zinc-500">
-                    <span className="font-semibold text-zinc-700">Tip — </span>
+                    <span className="font-semibold text-zinc-700">Tip: </span>
                     {stepsIntro.steps[activeStep].tip}
                   </p>
                 </motion.div>

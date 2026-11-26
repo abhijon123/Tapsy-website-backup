@@ -8,14 +8,14 @@ import { siteLinks } from "@/lib/content";
 
 const quickLinksLeft = [
   { label: "About Tapsy", href: "/about" },
-  { label: "For Reviewers", href: "/#how-it-works" },
-  { label: "For Business", href: "/#features" },
+  { label: "For Reviewers", href: "/reviewers" },
+  { label: "For Business", href: "/businesses" },
   { label: "Testimonials", href: "/#testimonials" },
 ];
 
 const quickLinksRight = [
   { label: "Pricing", href: "/#pricing" },
-  { label: "Blogs", href: "/#faq" },
+  { label: "Blogs", href: "/blogs" },
   { label: "Contact", href: "/about#faq" },
 ];
 

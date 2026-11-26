@@ -103,7 +103,7 @@ export function PhoneVideo({
         <AppBottomNav />
 
         {(title || place) && (
-          <div className="pointer-events-none absolute bottom-[54px] left-0 right-0 z-20 p-3 text-left">
+          <div className="pointer-events-none absolute bottom-[48px] left-0 right-0 z-20 p-3 text-left">
             {title ? (
               <p className="truncate text-[12px] font-bold text-white sm:text-[13px]">{title}</p>
             ) : null}

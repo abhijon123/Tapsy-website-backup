@@ -21,7 +21,7 @@ const flow = [
     id: "record",
     label: "Record the take",
     title: "One tap. You’re filming.",
-    detail: "Capture the vibe in a short reel — no setup, no CapCut.",
+    detail: "Capture the vibe in a short reel, no setup, no CapCut.",
     icon: Video,
     badge: "REC",
   },
@@ -53,7 +53,7 @@ const flow = [
     id: "verified",
     label: "Verified + ready",
     title: "Ready to post.",
-    detail: "Verified visit badge on. One take in — publish-ready out.",
+    detail: "Verified visit badge on. One take in, publish-ready out.",
     icon: ShieldCheck,
     badge: "Done",
   },
@@ -61,7 +61,7 @@ const flow = [
 
 const STEP_MS = 3200;
 
-/** Same reel stays looping; only overlays / active step change — like link.me */
+/** Same reel stays looping; only overlays / active step change, like link.me */
 export function StudioBoard() {
   const [mode, setMode] = useState<Mode>("auto");
   const [step, setStep] = useState(0);
@@ -108,7 +108,7 @@ export function StudioBoard() {
           <span className="block italic text-gradient-tapsy">Edit in zero.</span>
         </h3>
         <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-white/55">
-          One take circulates through the whole studio flow — trim, clean, tag, verify —
+          One take circulates through the whole studio flow: trim, clean, tag, verify,
           without leaving the reel.
         </p>
       </div>
@@ -159,7 +159,7 @@ export function StudioBoard() {
               <p className="mt-3 max-w-md text-[15px] leading-relaxed text-white/55">
                 {mode === "auto"
                   ? active.detail
-                  : `${active.detail} Flip this step on or off — same reel, your call.`}
+                  : `${active.detail} Flip this step on or off, same reel, your call.`}
               </p>
             </motion.div>
           </AnimatePresence>
@@ -180,7 +180,7 @@ export function StudioBoard() {
           </ul>
         </div>
 
-        {/* Center phone — one circulating video */}
+        {/* Center phone, one circulating video */}
         <div className="order-1 mx-auto w-[min(230px,72vw)] sm:w-[250px] lg:order-2 lg:w-[260px]">
           <div className="hero-phone aspect-[9/19.2] w-full shadow-[0_28px_60px_-18px_rgba(0,0,0,0.65)]">
             <div className="hero-phone-screen group">
@@ -201,7 +201,7 @@ export function StudioBoard() {
               <AppTopBar />
               <AppBottomNav />
 
-              {/* Step overlay chrome — video underneath never swaps */}
+              {/* Step overlay chrome, video underneath never swaps */}
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active.id}
@@ -279,8 +279,8 @@ export function StudioBoard() {
                     </div>
                   )}
 
-                  {/* Sit above scooped bottom nav (~58px) so REC chip isn't clipped */}
-                  <div className="absolute bottom-[70px] left-0 right-0 px-3 pb-2">
+                  {/* Sit above scooped bottom nav so REC chip isn't clipped */}
+                  <div className="absolute bottom-[56px] left-0 right-0 px-3 pb-2">
                     <div className="flex items-center gap-2">
                       <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-tapsy">
                         <ActiveIcon className="h-3.5 w-3.5" />
@@ -298,7 +298,7 @@ export function StudioBoard() {
           </div>
         </div>
 
-        {/* Right step rail — click to jump, auto circulates */}
+        {/* Right step rail, click to jump, auto circulates */}
         <div className="order-3 min-w-0 space-y-2">
           <p className="mb-3 text-[12px] font-medium text-white/40">
             Same flow · one video
@@ -356,7 +356,7 @@ export function StudioBoard() {
             );
           })}
 
-          {/* Progress bar for current step — scaleX so it never overflows the card */}
+          {/* Progress bar for current step, scaleX so it never overflows the card */}
           <div className="mt-3 h-1 w-full max-w-full overflow-hidden rounded-full bg-white/10">
             <motion.div
               key={step}

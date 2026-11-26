@@ -18,10 +18,10 @@ type NavLink = {
 
 const navLinks: NavLink[] = [
   { label: "How it works", href: "/#how-it-works", sectionId: "how-it-works" },
-  { label: "Publish", href: "/#publish", sectionId: "publish" },
-  { label: "Creators", href: "/#creators", sectionId: "creators" },
+  { label: "Businesses", href: "/businesses" },
+  { label: "Reviewers", href: "/reviewers" },
   { label: "About", href: "/about" },
-  { label: "Features", href: "/#features", sectionId: "features" },
+  { label: "Blogs", href: "/blogs" },
   { label: "Pricing", href: "/#pricing", sectionId: "pricing" },
 ];
 
@@ -43,18 +43,17 @@ export function Navbar() {
     spyLockedUntil.current = Date.now() + 900;
   };
 
-  // Transparent → dark glass while over hero/publish → solid white after
+  // Transparent at top → dark glass over hero only → white blur after (incl. publish)
+  // Publish used to stay on black glass, which hid the logo on the dark band.
   useEffect(() => {
     const update = () => {
       const hero = document.getElementById("hero");
-      const publish = document.getElementById("publish");
-      const darkEndEl = publish ?? hero;
-      const darkBottom = darkEndEl?.getBoundingClientRect().bottom ?? 0;
+      const heroBottom = hero?.getBoundingClientRect().bottom ?? 0;
       const y = window.scrollY;
 
       if (y < 12) {
         setNavTone("top");
-      } else if (darkBottom > 64) {
+      } else if (heroBottom > 64) {
         setNavTone("dark");
       } else {
         setNavTone("light");

@@ -11,8 +11,20 @@ import {
 } from "lucide-react";
 import { WordsPullUp } from "@/components/ui/words-pull-up";
 import { PhoneVideo } from "@/components/ui/phone-video";
+import { AppBottomNav, AppTopBar } from "@/components/ui/app-chrome";
 import { cn, assetUrl } from "@/lib/utils";
 import { siteVideos } from "@/lib/content";
+
+type VibeLevel = "bad" | "excellent" | "outstanding";
+
+const VIBE_META: Record<
+  VibeLevel,
+  { label: string; knob: string }
+> = {
+  bad: { label: "Bad", knob: "left-[8%]" },
+  excellent: { label: "Excellent", knob: "left-1/2 -translate-x-1/2" },
+  outstanding: { label: "Outstanding", knob: "right-[8%] left-auto" },
+};
 
 /** Full desktop orbit composition — CSS-scaled to fit phones / small monitors */
 const ORBIT_DESIGN_W = 920;
@@ -53,17 +65,17 @@ function Drift({
 }
 
 const categories = [
-  { label: "Restaurant", icon: Utensils, active: true },
-  { label: "Travel", icon: Plane, active: false },
-  { label: "Fitness", icon: Dumbbell, active: false },
-  { label: "Fashion", icon: Shirt, active: false },
-];
+  { label: "Restaurant", icon: Utensils },
+  { label: "Travel", icon: Plane },
+  { label: "Fitness", icon: Dumbbell },
+  { label: "Fashion", icon: Shirt },
+] as const;
 
 const tags = [
-  { label: "Pet-friendly", tone: "bg-zinc-100 text-zinc-700" },
-  { label: "Live Music", tone: "bg-gradient-tapsy text-white" },
-  { label: "Outdoor Seating", tone: "bg-zinc-100 text-zinc-700" },
-  { label: "WiFi", tone: "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white" },
+  { label: "Pet-friendly", activeTone: "bg-gradient-tapsy text-white", idleTone: "bg-zinc-100 text-zinc-700" },
+  { label: "Live Music", activeTone: "bg-gradient-tapsy text-white", idleTone: "bg-zinc-100 text-zinc-700" },
+  { label: "Outdoor Seating", activeTone: "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white", idleTone: "bg-zinc-100 text-zinc-700" },
+  { label: "WiFi", activeTone: "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white", idleTone: "bg-zinc-100 text-zinc-700" },
 ];
 
 const gallery = [
@@ -76,8 +88,41 @@ export function OrbitShowcase() {
   const sectionRef = useRef<HTMLElement>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string>("Restaurant");
+  const [vibe, setVibe] = useState<VibeLevel>("excellent");
+  const [activeTags, setActiveTags] = useState<string[]>(["Live Music", "WiFi"]);
+  const vibeTrackRef = useRef<HTMLDivElement>(null);
+  const draggingVibe = useRef(false);
   // Start scaled down so first paint on phones doesn't clip before measure
   const [fit, setFit] = useState({ scale: 0.45, height: Math.ceil(ORBIT_DESIGN_H * 0.45) });
+
+  const vibeFromClientX = (clientX: number) => {
+    const el = vibeTrackRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = (clientX - rect.left) / Math.max(rect.width, 1);
+    if (x < 0.33) setVibe("bad");
+    else if (x < 0.66) setVibe("excellent");
+    else setVibe("outstanding");
+  };
+
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      if (!draggingVibe.current) return;
+      vibeFromClientX(e.clientX);
+    };
+    const onUp = () => {
+      draggingVibe.current = false;
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+  }, []);
 
   // Pause floating cards when section is off-screen
   useEffect(() => {
@@ -248,17 +293,67 @@ export function OrbitShowcase() {
                 </Drift>
 
                 <Drift xIn={12} xOut={-22} duration={2.9} delay={0.25} className="w-full max-w-[240px]">
-                  <div className="rounded-2xl bg-white px-4 py-3.5 shadow-[0_18px_40px_-20px_rgba(15,10,40,0.28)] ring-1 ring-zinc-100">
+                  <div className="relative z-20 rounded-2xl bg-white px-4 py-3.5 shadow-[0_18px_40px_-20px_rgba(15,10,40,0.28)] ring-1 ring-zinc-100">
                     <div className="flex items-center justify-between text-[12px]">
-                      <span className="font-semibold text-zinc-800">Excellent</span>
+                      <span className="font-semibold text-zinc-800">
+                        {VIBE_META[vibe].label}
+                      </span>
                       <span className="text-zinc-400">Vibe</span>
                     </div>
-                    <div className="relative mt-3 h-2 rounded-full bg-gradient-to-r from-orange-400 via-fuchsia-500 to-violet-600">
-                      <span className="absolute right-[18%] top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-white bg-fuchsia-500 shadow" />
+                    <div
+                      ref={vibeTrackRef}
+                      role="slider"
+                      aria-valuetext={VIBE_META[vibe].label}
+                      aria-label="Vibe rating"
+                      tabIndex={0}
+                      className="relative mt-3 h-3 touch-none cursor-grab rounded-full bg-gradient-to-r from-orange-400 via-fuchsia-500 to-violet-600 active:cursor-grabbing"
+                      onPointerDown={(e) => {
+                        draggingVibe.current = true;
+                        e.currentTarget.setPointerCapture?.(e.pointerId);
+                        vibeFromClientX(e.clientX);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "ArrowLeft") {
+                          setVibe((v) =>
+                            v === "outstanding" ? "excellent" : v === "excellent" ? "bad" : "bad"
+                          );
+                        }
+                        if (e.key === "ArrowRight") {
+                          setVibe((v) =>
+                            v === "bad" ? "excellent" : v === "excellent" ? "outstanding" : "outstanding"
+                          );
+                        }
+                      }}
+                    >
+                      <span
+                        className={cn(
+                          "absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-white bg-fuchsia-500 shadow transition-all duration-200",
+                          VIBE_META[vibe].knob
+                        )}
+                      />
                     </div>
-                    <div className="mt-2 flex justify-between text-[10px] text-zinc-400">
-                      <span>Bad</span>
-                      <span>Outstanding</span>
+                    <div className="mt-2 flex justify-between text-[10px]">
+                      {(
+                        [
+                          ["bad", "Bad"],
+                          ["excellent", "Excellent"],
+                          ["outstanding", "Outstanding"],
+                        ] as const
+                      ).map(([key, label]) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => setVibe(key)}
+                          className={cn(
+                            "rounded-md px-1 py-0.5 font-medium transition",
+                            vibe === key
+                              ? "text-fuchsia-600"
+                              : "text-zinc-400 hover:text-zinc-600"
+                          )}
+                        >
+                          {label}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </Drift>
@@ -282,24 +377,37 @@ export function OrbitShowcase() {
               {/* RIGHT */}
               <div className="relative z-10 flex flex-col items-start justify-center gap-4 pl-2">
                 <Drift xIn={-12} xOut={22} duration={3} delay={0.05} className="w-full max-w-[280px]">
-                  <div className="rounded-2xl bg-white p-3 shadow-[0_18px_40px_-20px_rgba(15,10,40,0.28)] ring-1 ring-zinc-100">
+                  <div className="relative z-20 rounded-2xl bg-white p-3 shadow-[0_18px_40px_-20px_rgba(15,10,40,0.28)] ring-1 ring-zinc-100">
                     <div className="grid grid-cols-4 gap-2">
                       {categories.map((c) => {
                         const Icon = c.icon;
+                        const isOn = activeCategory === c.label;
                         return (
-                          <div key={c.label} className="flex flex-col items-center gap-1.5">
+                          <button
+                            key={c.label}
+                            type="button"
+                            onClick={() => setActiveCategory(c.label)}
+                            className="flex flex-col items-center gap-1.5 rounded-xl outline-none transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-fuchsia-300"
+                          >
                             <div
                               className={cn(
-                                "flex h-11 w-11 items-center justify-center rounded-xl",
-                                c.active
+                                "flex h-11 w-11 items-center justify-center rounded-xl transition",
+                                isOn
                                   ? "bg-gradient-tapsy text-white shadow-md shadow-fuchsia-500/25"
                                   : "bg-zinc-100 text-zinc-500"
                               )}
                             >
                               <Icon className="h-4 w-4" />
                             </div>
-                            <span className="text-[10px] font-medium text-zinc-500">{c.label}</span>
-                          </div>
+                            <span
+                              className={cn(
+                                "text-[10px] font-medium",
+                                isOn ? "text-zinc-800" : "text-zinc-500"
+                              )}
+                            >
+                              {c.label}
+                            </span>
+                          </button>
                         );
                       })}
                     </div>
@@ -307,36 +415,56 @@ export function OrbitShowcase() {
                 </Drift>
 
                 <Drift xIn={-11} xOut={20} duration={3.2} delay={0.2} className="w-full max-w-[260px]">
-                  <div className="rounded-2xl bg-white p-3.5 shadow-[0_18px_40px_-20px_rgba(15,10,40,0.28)] ring-1 ring-zinc-100">
+                  <div className="relative z-20 rounded-2xl bg-white p-3.5 shadow-[0_18px_40px_-20px_rgba(15,10,40,0.28)] ring-1 ring-zinc-100">
                     <p className="text-[12px] font-semibold leading-snug text-zinc-800">
                       How people search for spots like yours
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {tags.map((t) => (
-                        <span
-                          key={t.label}
-                          className={cn(
-                            "rounded-full px-2.5 py-1 text-[11px] font-semibold",
-                            t.tone
-                          )}
-                        >
-                          {t.label}
-                        </span>
-                      ))}
+                      {tags.map((t) => {
+                        const on = activeTags.includes(t.label);
+                        return (
+                          <button
+                            key={t.label}
+                            type="button"
+                            onClick={() =>
+                              setActiveTags((prev) =>
+                                prev.includes(t.label)
+                                  ? prev.filter((x) => x !== t.label)
+                                  : [...prev, t.label]
+                              )
+                            }
+                            className={cn(
+                              "rounded-full px-2.5 py-1 text-[11px] font-semibold transition",
+                              on ? t.activeTone : t.idleTone
+                            )}
+                          >
+                            {t.label}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 </Drift>
 
                 <Drift xIn={-14} xOut={24} duration={2.85} delay={0.15} className="w-[120px]">
-                  <div className="overflow-hidden rounded-[1.4rem] bg-[#111113] p-[5px] shadow-[0_22px_44px_-18px_rgba(0,0,0,0.45)]">
-                    <div className="relative aspect-[9/16] overflow-hidden rounded-[1.15rem] bg-black">
-                      <Image
-                        src={assetUrl("/assets/app-discover.png")}
-                        alt="Tapsy Discover"
-                        fill
-                        sizes="120px"
-                        className="object-cover object-top"
-                      />
+                  {/* Same hero-phone chrome as center mockup; screen asset fills the glass */}
+                  <div className="relative aspect-[9/19.2] w-[120px]">
+                    <div className="hero-phone absolute left-1/2 top-1/2 aspect-[9/19.2] w-[260px] origin-center -translate-x-1/2 -translate-y-1/2 scale-[0.4615]">
+                      <div className="hero-phone-screen !bg-[#f6f4f4]">
+                        {/* Feed sits under the top bar so search isn't covered */}
+                        <div className="absolute inset-x-0 bottom-0 top-[48px]">
+                          <Image
+                            src={assetUrl("/assets/app-discover-screen.png")}
+                            alt="Tapsy Discover"
+                            fill
+                            sizes="260px"
+                            className="object-cover object-[center_top]"
+                          />
+                        </div>
+                        {/* Same top/bottom chrome as the large phone */}
+                        <AppTopBar title="Discover" />
+                        <AppBottomNav />
+                      </div>
                     </div>
                   </div>
                 </Drift>

@@ -10,7 +10,15 @@ export function StickyCTA() {
   const pathname = usePathname();
   const router = useRouter();
   const [show, setShow] = useState(false);
-  const isAbout = pathname === "/about" || pathname.startsWith("/about/");
+  const isInnerPage =
+    pathname === "/about" ||
+    pathname.startsWith("/about/") ||
+    pathname === "/blogs" ||
+    pathname.startsWith("/blogs/") ||
+    pathname === "/businesses" ||
+    pathname.startsWith("/businesses/") ||
+    pathname === "/reviewers" ||
+    pathname.startsWith("/reviewers/");
 
   useEffect(() => {
     const onScroll = () => {
@@ -20,16 +28,16 @@ export function StickyCTA() {
       const nearFooter =
         download &&
         download.getBoundingClientRect().top < window.innerHeight * 0.85;
-      // On About (no download banner), hide near page bottom
+      // On inner pages (no download banner), hide near page bottom
       const nearBottom =
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 120;
-      setShow(pastHero && !(nearFooter || (isAbout && nearBottom)));
+      setShow(pastHero && !(nearFooter || (isInnerPage && nearBottom)));
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [isAbout]);
+  }, [isInnerPage]);
 
   const goDownload = () => {
     confetti({
@@ -38,7 +46,7 @@ export function StickyCTA() {
       origin: { y: 0.92 },
       colors: ["#3B82F6", "#9333EA", "#D946EF", "#FF6A3D"],
     });
-    if (isAbout) {
+    if (isInnerPage) {
       router.push("/#hero");
       return;
     }
@@ -61,9 +69,9 @@ export function StickyCTA() {
           >
             <Smartphone className="h-4 w-4" />
             Get the app
-            <span className="hidden text-[12px] font-medium text-white/80 sm:inline">
+            {/* <span className="hidden text-[12px] font-medium text-white/80 sm:inline">
               · Free to start
-            </span>
+            </span> */}
           </button>
         </motion.div>
       )}
