@@ -2,25 +2,34 @@
 
 import React, { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { Menu, X, Smartphone } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const navLinks = [
-  { label: "How it works", href: "#how-it-works" },
-  { label: "Publish", href: "#publish" },
-  { label: "Creators", href: "#creators" },
-  { label: "Discover", href: "#discover" },
-  { label: "Features", href: "#features" },
-  { label: "Pricing", href: "#pricing" },
-] as const;
+type NavLink = {
+  label: string;
+  href: string;
+  /** Home-page section id for scroll spy (omit for routed pages) */
+  sectionId?: string;
+};
+
+const navLinks: NavLink[] = [
+  { label: "How it works", href: "/#how-it-works", sectionId: "how-it-works" },
+  { label: "Publish", href: "/#publish", sectionId: "publish" },
+  { label: "Creators", href: "/#creators", sectionId: "creators" },
+  { label: "About", href: "/about" },
+  { label: "Features", href: "/#features", sectionId: "features" },
+  { label: "Pricing", href: "/#pricing", sectionId: "pricing" },
+];
 
 /** top = transparent over hero; dark = frosted glass on dark band; light = solid white */
 type NavTone = "top" | "dark" | "light";
 
 export function Navbar() {
+  const pathname = usePathname();
   const [navTone, setNavTone] = useState<NavTone>("top");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeHref, setActiveHref] = useState<string>("");
@@ -39,7 +48,6 @@ export function Navbar() {
     const update = () => {
       const hero = document.getElementById("hero");
       const publish = document.getElementById("publish");
-      // Dark band ends at the bottom of Publish (or Hero if Publish missing)
       const darkEndEl = publish ?? hero;
       const darkBottom = darkEndEl?.getBoundingClientRect().bottom ?? 0;
       const y = window.scrollY;
@@ -60,12 +68,26 @@ export function Navbar() {
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
     };
-  }, []);
+  }, [pathname]);
 
-  // Highlight the nav tab for the section currently in view
+  // Highlight routed page or the home section currently in view
   useEffect(() => {
+    const pageLink = navLinks.find(
+      (l) => !l.sectionId && (pathname === l.href || pathname.startsWith(`${l.href}/`))
+    );
+    if (pageLink) {
+      setActiveHref(pageLink.href);
+      return;
+    }
+
+    if (pathname !== "/") {
+      setActiveHref("");
+      return;
+    }
+
     const sections = navLinks
-      .map((link) => document.getElementById(link.href.slice(1)))
+      .filter((l): l is NavLink & { sectionId: string } => Boolean(l.sectionId))
+      .map((link) => document.getElementById(link.sectionId))
       .filter((el): el is HTMLElement => Boolean(el));
 
     if (!sections.length) return;
@@ -73,14 +95,15 @@ export function Navbar() {
     const visible = new Map<string, number>();
     const hero = () => document.getElementById("hero");
 
-    /** Still on hero → no highlighter at all */
     const onHero = () => {
       const el = hero();
       if (!el) return window.scrollY < 80;
       const bottom = el.getBoundingClientRect().bottom;
-      // Hero still covers most of the reading area
       return bottom > window.innerHeight * 0.5;
     };
+
+    const hrefForSection = (id: string) =>
+      navLinks.find((l) => l.sectionId === id)?.href ?? `/#${id}`;
 
     const pickActive = () => {
       if (Date.now() < spyLockedUntil.current) return;
@@ -100,7 +123,6 @@ export function Navbar() {
       for (const el of sections) {
         if (!visible.has(el.id)) continue;
         const rect = el.getBoundingClientRect();
-        // Prefer section whose top is in/near the upper reading band
         const mid = rect.top + Math.min(rect.height * 0.15, 120);
         const score = -Math.abs(mid - window.innerHeight * 0.32);
         if (score > bestScore) {
@@ -108,7 +130,7 @@ export function Navbar() {
           bestId = el.id;
         }
       }
-      setActiveHref(bestId ? `#${bestId}` : "");
+      setActiveHref(bestId ? hrefForSection(bestId) : "");
     };
 
     const observer = new IntersectionObserver(
@@ -131,13 +153,13 @@ export function Navbar() {
 
     sections.forEach((el) => observer.observe(el));
 
-    // Hash only if that section is actually on screen (not while parked on hero)
     const hash = window.location.hash;
-    if (hash && navLinks.some((l) => l.href === hash) && !onHero()) {
+    const hashHref = hash ? `/${hash}` : "";
+    if (hash && navLinks.some((l) => l.href === hashHref) && !onHero()) {
       const target = document.getElementById(hash.slice(1));
       const rect = target?.getBoundingClientRect();
       if (rect && rect.top < window.innerHeight * 0.7 && rect.bottom > 80) {
-        setActiveHref(hash);
+        setActiveHref(hashHref);
       } else {
         setActiveHref("");
       }
@@ -150,7 +172,7 @@ export function Navbar() {
       observer.disconnect();
       window.removeEventListener("scroll", pickActive);
     };
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -171,6 +193,17 @@ export function Navbar() {
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [mobileMenuOpen]);
+
+  const goDownload = () => {
+    // From About (and other pages): land on home hero banner
+    if (pathname !== "/") {
+      window.location.href = "/#hero";
+      return;
+    }
+    document
+      .getElementById("download-cta")
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const onDark = navTone !== "light";
   const compact = navTone !== "top";
@@ -236,15 +269,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden items-center gap-2.5 lg:flex">
-          <Button
-            size="sm"
-            variant="gradient"
-            onClick={() =>
-              document
-                .getElementById("download-cta")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
-          >
+          <Button size="sm" variant="gradient" onClick={goDownload}>
             <Smartphone className="h-3.5 w-3.5" />
             Get app
           </Button>
@@ -308,9 +333,7 @@ export function Navbar() {
               className="mt-2 w-full"
               onClick={() => {
                 setMobileMenuOpen(false);
-                document
-                  .getElementById("download-cta")
-                  ?.scrollIntoView({ behavior: "smooth" });
+                goDownload();
               }}
             >
               <Smartphone className="h-4 w-4" />

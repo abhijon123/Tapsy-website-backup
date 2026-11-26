@@ -7,16 +7,16 @@ import { BrandLogo } from "@/components/ui/brand-logo";
 import { siteLinks } from "@/lib/content";
 
 const quickLinksLeft = [
-  { label: "About Tapsy", href: "#creators" },
-  { label: "For Reviewers", href: "#how-it-works" },
-  { label: "For Business", href: "#features" },
-  { label: "Testimonials", href: "#testimonials" },
+  { label: "About Tapsy", href: "/about" },
+  { label: "For Reviewers", href: "/#how-it-works" },
+  { label: "For Business", href: "/#features" },
+  { label: "Testimonials", href: "/#testimonials" },
 ];
 
 const quickLinksRight = [
-  { label: "Pricing", href: "#pricing" },
-  { label: "Blogs", href: "#faq" },
-  { label: "Contact", href: "#faq" },
+  { label: "Pricing", href: "/#pricing" },
+  { label: "Blogs", href: "/#faq" },
+  { label: "Contact", href: "/about#faq" },
 ];
 
 /** Brand gradient for social glyphs — purple → magenta → coral */

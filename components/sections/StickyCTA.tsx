@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Smartphone } from "lucide-react";
 import confetti from "canvas-confetti";
 
 export function StickyCTA() {
+  const pathname = usePathname();
+  const router = useRouter();
   const [show, setShow] = useState(false);
+  const isAbout = pathname === "/about" || pathname.startsWith("/about/");
 
   useEffect(() => {
     const onScroll = () => {
@@ -16,12 +20,16 @@ export function StickyCTA() {
       const nearFooter =
         download &&
         download.getBoundingClientRect().top < window.innerHeight * 0.85;
-      setShow(pastHero && !nearFooter);
+      // On About (no download banner), hide near page bottom
+      const nearBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 120;
+      setShow(pastHero && !(nearFooter || (isAbout && nearBottom)));
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isAbout]);
 
   const goDownload = () => {
     confetti({
@@ -30,6 +38,10 @@ export function StickyCTA() {
       origin: { y: 0.92 },
       colors: ["#3B82F6", "#9333EA", "#D946EF", "#FF6A3D"],
     });
+    if (isAbout) {
+      router.push("/#hero");
+      return;
+    }
     document.getElementById("download-cta")?.scrollIntoView({ behavior: "smooth" });
   };
 

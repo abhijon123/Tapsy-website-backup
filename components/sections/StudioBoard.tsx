@@ -224,7 +224,8 @@ export function StudioBoard() {
                   )}
 
                   {active.id === "trim" && (
-                    <div className="absolute inset-x-3 bottom-[4.5rem]">
+                    /* Above step chip (~bottom-70px) so captions don’t overlap */
+                    <div className="absolute inset-x-3 bottom-[7.25rem]">
                       <div className="h-1.5 overflow-hidden rounded-full bg-white/20">
                         <motion.div
                           className="h-full rounded-full bg-gradient-tapsy"
@@ -278,7 +279,8 @@ export function StudioBoard() {
                     </div>
                   )}
 
-                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                  {/* Sit above scooped bottom nav (~58px) so REC chip isn't clipped */}
+                  <div className="absolute bottom-[70px] left-0 right-0 px-3 pb-2">
                     <div className="flex items-center gap-2">
                       <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-tapsy">
                         <ActiveIcon className="h-3.5 w-3.5" />

@@ -14,7 +14,8 @@ import { cn } from "@/lib/utils";
 const STACK = siteContent.venues.slice(0, 4);
 const N = STACK.length;
 const AUTO_MS = 5500;
-const RESUME_MS = 10000;
+/** After a tap/click, pause auto-rotate briefly then continue */
+const RESUME_MS = 2500;
 
 /** Shortest signed circular distance from `from` → `to` on a ring of size N */
 function circularOffset(from: number, to: number) {
@@ -79,7 +80,6 @@ function ringStyle(offset: number, compact: boolean) {
 export function AppShowcase() {
   const [active, setActive] = useState(0);
   const [compact, setCompact] = useState(false);
-  const hoverPaused = useRef(false);
   const lockedUntil = useRef(0);
   const focused = STACK[active];
 
@@ -99,7 +99,8 @@ export function AppShowcase() {
 
   useEffect(() => {
     const id = setInterval(() => {
-      if (hoverPaused.current || Date.now() < lockedUntil.current) return;
+      // Only pause after an explicit click/tap — hover never stops rotation
+      if (Date.now() < lockedUntil.current) return;
       setActive((i) => (i + 1) % N);
     }, AUTO_MS);
     return () => clearInterval(id);
@@ -171,12 +172,6 @@ export function AppShowcase() {
             <div
               className="relative flex h-full w-full min-w-0 items-center justify-center overflow-x-clip sm:overflow-visible lg:justify-end"
               style={{ perspective: 1600 }}
-              onMouseEnter={() => {
-                hoverPaused.current = true;
-              }}
-              onMouseLeave={() => {
-                hoverPaused.current = false;
-              }}
             >
               <div
                 className="relative aspect-[9/19.2] w-[min(252px,68vw)] sm:h-[500px] sm:w-[252px] sm:aspect-auto"
@@ -206,7 +201,7 @@ export function AppShowcase() {
                         zIndex: style.zIndex,
                       }}
                       transition={{
-                        duration: 0.55,
+                        duration: 0.85,
                         ease: [0.22, 1, 0.36, 1],
                       }}
                     >
