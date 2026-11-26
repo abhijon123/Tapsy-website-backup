@@ -49,7 +49,9 @@ jobs:
       - name: Build with Next.js
         run: npm run build
         env:
-          NEXT_PUBLIC_BASE_PATH: /Tapsy-website
+          # Project Pages URL is https://<user>.github.io/<repo>/
+          # Works for both origin (Tapsy-website) and side (Tapsy-website-backup)
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
 
       - name: Disable Jekyll
         run: touch out/.nojekyll
