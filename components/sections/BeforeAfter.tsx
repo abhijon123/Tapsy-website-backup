@@ -6,8 +6,8 @@ import { Type, Video } from "lucide-react";
 import { WordsPullUp } from "@/components/ui/words-pull-up";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { Reveal } from "@/components/ui/reveal";
-import { cn, assetUrl } from "@/lib/utils";
-import { siteVideos } from "@/lib/content";
+import { cn } from "@/lib/utils";
+import { sitePosters, siteVideos } from "@/lib/content";
 
 function BannerVideo() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -51,7 +51,7 @@ function BannerVideo() {
         <video
           ref={videoRef}
           src={siteVideos.beforeAfter}
-          poster={assetUrl("/assets/app-reel-bellavista.png")}
+          poster={sitePosters.beforeAfter}
           muted
           loop
           playsInline

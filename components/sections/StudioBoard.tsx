@@ -11,7 +11,7 @@ import {
   Video,
 } from "lucide-react";
 import { cn, assetUrl } from "@/lib/utils";
-import { siteVideos } from "@/lib/content";
+import { sitePosters, siteVideos } from "@/lib/content";
 import { AppBottomNav, AppTopBar } from "@/components/ui/app-chrome";
 
 type Mode = "auto" | "manual";
@@ -187,7 +187,7 @@ export function StudioBoard() {
               <video
                 ref={videoRef}
                 src={siteVideos.studio}
-                poster={assetUrl("/assets/app-reel-bellavista.png")}
+                poster={sitePosters.studio}
                 muted
                 loop
                 playsInline

@@ -57,7 +57,7 @@ export function AudienceHero({
         <span>{title} </span>
         {titleAccent ? <span>{titleAccent} </span> : null}
         {typewriterTexts?.length ? (
-          <span className="inline">
+          <span className="mt-0.5 inline-block max-sm:block">
             {typewriterLead ? `${typewriterLead} ` : null}
             <TypewriterText texts={typewriterTexts} />
           </span>

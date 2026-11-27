@@ -84,6 +84,7 @@ function CreatorCard({ creator }: { creator: Creator }) {
           </p>
         </div>
         <button
+          type="button"
           onClick={handleFollow}
           className={`shrink-0 rounded-full px-3.5 py-1.5 text-[12px] font-bold transition ${
             following

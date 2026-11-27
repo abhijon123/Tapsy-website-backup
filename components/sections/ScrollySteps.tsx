@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { siteContent } from "@/lib/content";
+import { siteContent, sitePosters } from "@/lib/content";
 import { Check } from "lucide-react";
 import { Reveal } from "@/components/ui/reveal";
 import { assetUrl } from "@/lib/utils";
@@ -170,7 +170,7 @@ export function ScrollySteps() {
 
                         <div className="relative my-3 h-[58%] overflow-hidden rounded-2xl bg-zinc-900">
                           <Image
-                            src={assetUrl("/assets/app-reel-bellavista.png")}
+                            src={sitePosters.hero}
                             alt="Recording viewfinder"
                             fill
                             className="phone-media"
@@ -229,7 +229,7 @@ export function ScrollySteps() {
                           </div>
                           <div className="relative mb-4 aspect-video overflow-hidden rounded-xl bg-zinc-900">
                             <Image
-                              src={assetUrl("/assets/app-reel-bellavista.png")}
+                              src={sitePosters.orbit}
                               alt="Review preview"
                               fill
                               className="object-cover"
@@ -300,11 +300,11 @@ export function ScrollySteps() {
                         <div className="my-2 grid grid-cols-2 gap-2">
                           {[
                             {
-                              src: assetUrl("/assets/app-reel-bellavista.png"),
+                              src: sitePosters.hero,
                               label: "Bella Vista",
                             },
                             {
-                              src: assetUrl("/assets/cafe-vibe.jpg"),
+                              src: sitePosters.publish,
                               label: "Coffee Lab",
                             },
                           ].map((item) => (

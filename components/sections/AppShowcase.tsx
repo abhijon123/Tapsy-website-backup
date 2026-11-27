@@ -33,13 +33,14 @@ function ringStyle(offset: number, compact: boolean) {
   const far = compact ? 130 : 180;
 
   if (compact && abs > 0) {
-    // Mobile: only the focused phone is fully visible
+    // Mobile: equal peeks around the centered phone
+    const peek = 64;
     return {
-      x: offset > 0 ? side1 : -side1,
+      x: offset > 0 ? peek : -peek,
       scale: 0.72,
       rotateY: 0,
       z: -60,
-      opacity: abs === 1 ? 0.35 : 0,
+      opacity: abs === 1 ? 0.4 : 0,
       zIndex: abs === 1 ? 20 : 1,
     };
   }
@@ -170,30 +171,52 @@ export function AppShowcase() {
             className="relative isolate z-0 w-full min-w-0 pb-6 pt-2 sm:h-[500px] sm:pb-0 sm:pt-0 lg:h-[540px]"
           >
             <div
-              className="relative flex h-full w-full min-w-0 items-center justify-center overflow-x-clip sm:overflow-visible lg:justify-end"
+              className="relative mx-auto flex h-full w-full min-w-0 items-center justify-center overflow-x-clip sm:overflow-visible lg:mx-0 lg:justify-end"
               style={{ perspective: 1600 }}
             >
               <div
-                className="relative aspect-[9/19.2] w-[min(252px,68vw)] sm:h-[500px] sm:w-[252px] sm:aspect-auto"
+                className="relative mx-auto aspect-[9/19.2] w-[min(252px,72vw)] sm:mx-0 sm:h-[500px] sm:w-[252px] sm:aspect-auto"
                 style={{ transformStyle: "preserve-3d" }}
               >
+                {/* Mobile: side hit targets inside the stage (center phone was eating right taps) */}
+                {compact ? (
+                  <>
+                    <button
+                      type="button"
+                      aria-label="Show previous phone"
+                      onClick={() => focusPhone((active - 1 + N) % N)}
+                      className="absolute inset-y-[10%] left-0 z-[60] w-[32%] cursor-pointer touch-manipulation bg-transparent"
+                    />
+                    <button
+                      type="button"
+                      aria-label="Show next phone"
+                      onClick={() => focusPhone((active + 1) % N)}
+                      className="absolute inset-y-[10%] right-0 z-[60] w-[32%] cursor-pointer touch-manipulation bg-transparent"
+                    />
+                  </>
+                ) : null}
+
                 {items.map(({ venue, index, offset }) => {
                   const style = ringStyle(offset, compact);
                   const isActive = offset === 0;
                   const phoneWidth =
-                    "w-[min(210px,70vw)] sm:w-[230px] lg:w-[252px]";
+                    "w-[min(210px,58vw)] sm:w-[230px] lg:w-[252px]";
 
                   return (
                     <motion.div
                       key={venue.id}
                       className={cn(
-                        "absolute left-0 top-0 origin-center",
+                        // Mobile: anchor from center so the focused phone sits dead-center
+                        "absolute top-0 origin-center",
+                        compact ? "left-1/2" : "left-0",
+                        // Center doesn't need taps; far cards are decorative only
+                        (isActive || Math.abs(offset) > 1) && "pointer-events-none",
                         Math.abs(offset) > 2 && "pointer-events-none"
                       )}
                       style={{ zIndex: style.zIndex }}
                       initial={false}
                       animate={{
-                        x: style.x,
+                        x: compact ? `calc(-50% + ${style.x}px)` : style.x,
                         z: style.z,
                         scale: style.scale,
                         rotateY: style.rotateY,
@@ -225,7 +248,7 @@ export function AppShowcase() {
                           type="button"
                           aria-label={`Focus ${venue.title}`}
                           onClick={() => focusPhone(index)}
-                          className="cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400"
+                          className="cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fuchsia-400"
                         >
                           <div className={cn("hero-phone aspect-[9/19.2] shadow-lg", phoneWidth)}>
                             <div className="hero-phone-screen">

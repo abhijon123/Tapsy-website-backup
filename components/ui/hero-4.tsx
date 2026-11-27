@@ -72,18 +72,18 @@ export function TypewriterText({
   return (
     <span
       className={cn(
-        // Extra right pad so italic glyphs + cursor never clip
-        "relative inline-block max-w-full overflow-visible align-baseline italic leading-[inherit] pr-[0.55em] max-sm:whitespace-normal sm:whitespace-nowrap",
+        // Extra right pad so italic glyphs + cursor never clip.
+        // Always reserve longest word width so typing never reflows (incl. mobile).
+        "relative inline-block max-w-full overflow-visible whitespace-nowrap align-baseline italic leading-[inherit] pr-[0.55em]",
         className
       )}
     >
-      {/* Invisible sizer — same font metrics, reserves longest width (desktop+) */}
-      <span className="invisible max-sm:hidden" aria-hidden>
+      <span className="invisible" aria-hidden>
         {longest}
       </span>
       <span
         className={cn(
-          "overflow-visible pr-[0.55em] max-sm:relative sm:absolute sm:left-0 sm:top-0 sm:whitespace-nowrap",
+          "absolute left-0 top-0 overflow-visible whitespace-nowrap pr-[0.55em]",
           gradient ? "text-gradient-typewriter" : "text-inherit"
         )}
       >

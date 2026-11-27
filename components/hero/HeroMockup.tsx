@@ -3,8 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { PhoneVideo } from "@/components/ui/phone-video";
-import { assetUrl } from "@/lib/utils";
-import { siteVideos } from "@/lib/content";
+import { sitePosters, siteVideos } from "@/lib/content";
 
 export function HeroMockup() {
   return (
@@ -25,7 +24,7 @@ export function HeroMockup() {
           <div className="mx-auto flex w-full justify-center md:justify-end">
             <PhoneVideo
               src={siteVideos.hero}
-              poster={assetUrl("/assets/app-reel-bellavista.png")}
+              poster={sitePosters.hero}
               title="Handmade pappardelle"
               place="Bella Vista"
               widthClassName="mx-auto w-[min(250px,72vw)] sm:w-[300px] lg:w-[320px] md:mx-0"

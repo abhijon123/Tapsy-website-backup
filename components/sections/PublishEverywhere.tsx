@@ -18,7 +18,7 @@ import { MetricsStrip } from "@/components/sections/MetricsStrip";
 import { DistributeBeams } from "@/components/ui/distribute-beams";
 import { AppBottomNav, AppTopBar } from "@/components/ui/app-chrome";
 import { cn, assetUrl } from "@/lib/utils";
-import { siteVideos } from "@/lib/content";
+import { sitePosters, siteVideos } from "@/lib/content";
 
 const destinations = [
   {
@@ -444,7 +444,7 @@ export function PublishEverywhere() {
                         ) : (
                           <>
                             <img
-                              src={assetUrl("/assets/app-reel-bellavista.png")}
+                              src={sitePosters.publish}
                               alt=""
                               className="absolute inset-0 h-full w-full object-cover opacity-40"
                               draggable={false}
@@ -713,7 +713,7 @@ export function PublishEverywhere() {
                     >
                       <video
                         src={siteVideos.publish}
-                        poster={assetUrl("/assets/app-reel-bellavista.png")}
+                        poster={sitePosters.publish}
                         muted
                         loop
                         playsInline
@@ -775,7 +775,7 @@ function AlwaysPlayingVideo({
       <video
         ref={videoRef}
         src={siteVideos.publish}
-        poster={assetUrl("/assets/app-reel-bellavista.png")}
+        poster={sitePosters.publish}
         muted
         loop
         playsInline

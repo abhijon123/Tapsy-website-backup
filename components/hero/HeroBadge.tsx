@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Video, ArrowRight } from "lucide-react";
 
 export function HeroBadge() {
   return (
@@ -16,7 +16,7 @@ export function HeroBadge() {
         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75" />
         <span className="relative inline-flex rounded-full h-2 w-2 bg-gradient-to-r from-purple-600 to-pink-500" />
       </span>
-      <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+      <Video className="w-3.5 h-3.5 text-purple-600" />
       <span>Why type reviews when you can tap?</span>
       <span className="px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-md bg-purple-100 text-purple-700 dark:bg-purple-900/60 dark:text-purple-300">
         New

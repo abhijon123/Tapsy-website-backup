@@ -44,7 +44,7 @@ const benefits = [
     body: "Build a steady stream of real content without complicated campaigns or shoot days.",
   },
   {
-    icon: "sparkles" as const,
+    icon: "megaphone" as const,
     title: "Build stronger brand presence",
     body: "Create emotional connections that text reviews and ads simply can’t match.",
   },
@@ -64,7 +64,7 @@ export default function BusinessesPage() {
         imageSrc="/assets/cafe-vibe.jpg"
         imagePosition="object-[center_42%]"
         videoSrc={siteVideos.studio}
-        videoPoster={assetUrl("/assets/creator-recording-feature.png")}
+        videoPoster={assetUrl("/assets/posters/reel-4.jpg")}
         videoTitle="Customer testimonials"
         videoPlace="Built for local businesses"
       />
@@ -74,7 +74,7 @@ export default function BusinessesPage() {
         description="Whether it’s word of mouth or video reviews, real people convert better. With Tapsy, businesses can collect, display, and grow from genuine customer stories."
         benefits={benefits}
         videoSrc={siteVideos.publish}
-        videoPoster={assetUrl("/assets/cafe-vibe.jpg")}
+        videoPoster={assetUrl("/assets/posters/reel-2.jpg")}
         videoTitle="Authentic reviews"
         videoPlace="Trust that converts"
       />

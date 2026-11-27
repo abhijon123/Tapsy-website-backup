@@ -7,7 +7,7 @@ import { TypewriterText } from "@/components/ui/hero-4";
 import { PhoneVideo } from "@/components/ui/phone-video";
 import { Smartphone } from "lucide-react";
 import { useParallax } from "@/hooks/useParallax";
-import { siteVideos } from "@/lib/content";
+import { sitePosters, siteVideos } from "@/lib/content";
 import { assetUrl } from "@/lib/utils";
 
 export function AboutHero() {
@@ -103,7 +103,7 @@ export function AboutHero() {
                 <div className="mx-auto flex w-full justify-center md:justify-end">
                   <PhoneVideo
                     src={siteVideos.publish}
-                    poster={assetUrl("/assets/cafe-vibe.jpg")}
+                    poster={sitePosters.publish}
                     title="Real reviews"
                     place="30-second authentic takes"
                     widthClassName="mx-auto w-[min(250px,72vw)] sm:w-[300px] lg:w-[320px] md:mx-0"

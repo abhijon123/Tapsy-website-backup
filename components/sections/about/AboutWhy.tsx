@@ -4,8 +4,7 @@ import { MapPin, Video, Heart, BadgeCheck, Clapperboard } from "lucide-react";
 import { Reveal, Stagger, StaggerItem } from "@/components/ui/reveal";
 import { WordsPullUp } from "@/components/ui/words-pull-up";
 import { PhoneVideo } from "@/components/ui/phone-video";
-import { siteVideos } from "@/lib/content";
-import { assetUrl } from "@/lib/utils";
+import { sitePosters, siteVideos } from "@/lib/content";
 
 const reasons = [
   {
@@ -98,7 +97,7 @@ export function AboutWhy() {
               <div className="relative animate-[float-y_7s_ease-in-out_infinite]">
                 <PhoneVideo
                   src={siteVideos.orbit}
-                  poster={assetUrl("/assets/cafe-vibe.jpg")}
+                  poster={sitePosters.orbit}
                   title="Real people"
                   place="Authentic video reviews"
                   widthClassName="w-full max-w-[260px] sm:max-w-[280px]"

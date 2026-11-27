@@ -5,7 +5,8 @@ import {
   BadgeCheck,
   Eye,
   Clapperboard,
-  Sparkles,
+  Zap,
+  Megaphone,
   Heart,
   Utensils,
   Hotel,
@@ -20,7 +21,8 @@ const ICONS: Record<string, LucideIcon> = {
   badge: BadgeCheck,
   eye: Eye,
   clapperboard: Clapperboard,
-  sparkles: Sparkles,
+  zap: Zap,
+  megaphone: Megaphone,
   heart: Heart,
   utensils: Utensils,
   hotel: Hotel,
@@ -111,7 +113,7 @@ export function AudienceBenefits({
             }
           >
             {benefits.map((item) => {
-              const Icon = ICONS[item.icon] ?? Sparkles;
+              const Icon = ICONS[item.icon] ?? Video;
               return (
                 <StaggerItem key={item.title} className="min-w-0">
                   <div className="flex gap-3.5">

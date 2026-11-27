@@ -68,7 +68,11 @@ function PersonCard({
           <p className="truncate text-[11px] text-zinc-400">{person.role}</p>
         </div>
         <button
-          onClick={onToggle}
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggle();
+          }}
           className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold text-white transition sm:px-3 sm:text-[12px] ${
             following ? "bg-zinc-800" : "bg-gradient-tapsy"
           }`}

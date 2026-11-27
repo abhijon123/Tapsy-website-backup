@@ -49,7 +49,7 @@ const benefits = [
     body: "From hotel rooms to product condition and customer service, show the truth in seconds.",
   },
   {
-    icon: "sparkles" as const,
+    icon: "zap" as const,
     title: "Fast and effortless",
     body: "Record and share authentic video reviews in just 20 to 30 seconds from your phone.",
   },
@@ -68,7 +68,7 @@ export default function ReviewersPage() {
         imageSrc="/assets/hero-reviewers.jpg"
         imagePosition="object-[center_40%]"
         videoSrc={siteVideos.orbit}
-        videoPoster={assetUrl("/assets/cafe-vibe.jpg")}
+        videoPoster={assetUrl("/assets/posters/reel-3.jpg")}
         videoTitle="Your honest take"
         videoPlace="20 to 30 second reviews"
       />
@@ -101,7 +101,7 @@ export default function ReviewersPage() {
         description="People can actually see your experience. Traditional reviews often lack context. Video reviews let viewers see food quality, hotel rooms, product condition, and customer service."
         benefits={benefits}
         videoSrc={siteVideos.hero}
-        videoPoster={assetUrl("/assets/why-type-creators.jpg")}
+        videoPoster={assetUrl("/assets/posters/reel-1.jpg")}
         videoTitle="See the experience"
         videoPlace="More powerful than text"
       />

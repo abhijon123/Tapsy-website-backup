@@ -13,7 +13,7 @@ import { WordsPullUp } from "@/components/ui/words-pull-up";
 import { PhoneVideo } from "@/components/ui/phone-video";
 import { AppBottomNav, AppTopBar } from "@/components/ui/app-chrome";
 import { cn, assetUrl } from "@/lib/utils";
-import { siteVideos } from "@/lib/content";
+import { sitePosters, siteVideos } from "@/lib/content";
 
 type VibeLevel = "bad" | "excellent" | "outstanding";
 
@@ -363,7 +363,7 @@ export function OrbitShowcase() {
               <div className="relative z-30 mx-auto w-[260px]">
                 <PhoneVideo
                   src={siteVideos.orbit}
-                  poster={assetUrl("/assets/app-reel-bellavista.png")}
+                  poster={sitePosters.orbit}
                   title="Tapsy video take"
                   place="Verified visit"
                   widthClassName="w-full"

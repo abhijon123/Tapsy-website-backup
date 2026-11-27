@@ -41,6 +41,15 @@ export const siteVideos = {
   ],
 } as const;
 
+/** Real first-frame posters (matched to each reel) — video-card look while loading */
+export const sitePosters = {
+  hero: assetUrl("/assets/posters/reel-1.jpg"),
+  publish: assetUrl("/assets/posters/reel-2.jpg"),
+  orbit: assetUrl("/assets/posters/reel-3.jpg"),
+  studio: assetUrl("/assets/posters/reel-4.jpg"),
+  beforeAfter: assetUrl("/assets/posters/reel-5.jpg"),
+} as const;
+
 export const siteLinks = {
   appStore: "https://apps.apple.com/in/app/tapsy-brand-review/id6754841809",
   playStore:
@@ -223,8 +232,7 @@ export const siteContent = {
       title: "Handmade pappardelle",
       place: "Bella Vista",
       category: "Restaurant",
-      image:
-        "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=900&q=80",
+      image: assetUrl("/assets/posters/reel-1.jpg"),
       rating: 5.0,
       duration: "0:28",
       video: assetUrl("/assets/videos/Tapsy-video-1.mp4"),
@@ -234,7 +242,7 @@ export const siteContent = {
       title: "Latte art ritual",
       place: "Artisan Coffee Lab",
       category: "Cafe",
-      image: assetUrl("/assets/cafe-vibe.jpg"),
+      image: assetUrl("/assets/posters/reel-2.jpg"),
       rating: 4.9,
       duration: "0:22",
       video: assetUrl("/assets/videos/tapsy-video-2.mp4"),
@@ -244,7 +252,7 @@ export const siteContent = {
       title: "Neon hour cocktails",
       place: "Sky Lounge",
       category: "Nightlife",
-      image: assetUrl("/assets/nightlife-vibe.jpg"),
+      image: assetUrl("/assets/posters/reel-3.jpg"),
       rating: 4.8,
       duration: "0:30",
       video: assetUrl("/assets/videos/Tapsy-video-3.mp4"),
@@ -254,8 +262,7 @@ export const siteContent = {
       title: "Rooftop golden hour",
       place: "Harbor House",
       category: "Travel",
-      image:
-        "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80",
+      image: assetUrl("/assets/posters/reel-4.jpg"),
       rating: 4.9,
       duration: "0:25",
       video: assetUrl("/assets/videos/Tapsy-video-4.mp4"),
@@ -337,7 +344,7 @@ export const siteContent = {
       description:
         "Smart trim, audio clean, overlays, and badges, without leaving the app.",
       tag: "Pro tools",
-      icon: "Sparkles",
+      icon: "Clapperboard",
       image: assetUrl("/assets/creator-recording-feature.png"),
     },
     {
