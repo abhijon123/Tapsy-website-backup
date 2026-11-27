@@ -1,13 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TypewriterText } from "@/components/ui/hero-4";
 import { PhoneVideo } from "@/components/ui/phone-video";
 import { useParallax } from "@/hooks/useParallax";
-import { assetUrl, cn } from "@/lib/utils";
+import { assetUrl, cn, goToDownloadCta } from "@/lib/utils";
 
 export function AudienceHero({
   eyebrow,
@@ -44,7 +43,6 @@ export function AudienceHero({
   videoTitle?: string;
   videoPlace?: string;
 }) {
-  const router = useRouter();
   const offset = useParallax(700);
 
   const copy = (
@@ -68,7 +66,7 @@ export function AudienceHero({
         {description}
       </p>
       <div className="animate-in animate-in-delay-3 mt-7 flex flex-wrap items-center gap-3">
-        <Button size="lg" variant="gradient" onClick={() => router.push("/#hero")}>
+        <Button size="lg" variant="gradient" onClick={goToDownloadCta}>
           <Smartphone className="h-4 w-4" />
           Get the app
         </Button>

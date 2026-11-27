@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Smartphone } from "lucide-react";
 import confetti from "canvas-confetti";
+import { goToDownloadCta } from "@/lib/utils";
 
 export function StickyCTA() {
   const pathname = usePathname();
-  const router = useRouter();
   const [show, setShow] = useState(false);
   const isInnerPage =
     pathname === "/about" ||
@@ -46,11 +46,7 @@ export function StickyCTA() {
       origin: { y: 0.92 },
       colors: ["#3B82F6", "#9333EA", "#D946EF", "#FF6A3D"],
     });
-    if (isInnerPage) {
-      router.push("/#hero");
-      return;
-    }
-    document.getElementById("download-cta")?.scrollIntoView({ behavior: "smooth" });
+    goToDownloadCta();
   };
 
   return (

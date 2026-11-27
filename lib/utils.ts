@@ -22,4 +22,16 @@ export function assetUrl(path: string): string {
   return `${basePath}${cleanPath}`;
 }
 
+/** Scroll to home download banner, or navigate there with correct GitHub Pages basePath. */
+export function goToDownloadCta() {
+  if (typeof document === "undefined") return;
+  const el = document.getElementById("download-cta");
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  window.location.assign(`${basePath}/#download-cta`);
+}
+
 

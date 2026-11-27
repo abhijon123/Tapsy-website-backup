@@ -1,17 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { TypewriterText } from "@/components/ui/hero-4";
 import { PhoneVideo } from "@/components/ui/phone-video";
 import { Smartphone } from "lucide-react";
 import { useParallax } from "@/hooks/useParallax";
 import { sitePosters, siteVideos } from "@/lib/content";
-import { assetUrl } from "@/lib/utils";
+import { assetUrl, goToDownloadCta } from "@/lib/utils";
 
 export function AboutHero() {
-  const router = useRouter();
   const offset = useParallax(700);
 
   return (
@@ -70,7 +68,7 @@ export function AboutHero() {
               <Button
                 size="lg"
                 variant="gradient"
-                onClick={() => router.push("/#hero")}
+                onClick={goToDownloadCta}
               >
                 <Smartphone className="h-4 w-4" />
                 Get the app

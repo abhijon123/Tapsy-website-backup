@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { Menu, X, Smartphone } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, goToDownloadCta } from "@/lib/utils";
 
 type NavLink = {
   label: string;
@@ -194,14 +194,7 @@ export function Navbar() {
   }, [mobileMenuOpen]);
 
   const goDownload = () => {
-    // From About (and other pages): land on home hero banner
-    if (pathname !== "/") {
-      window.location.href = "/#hero";
-      return;
-    }
-    document
-      .getElementById("download-cta")
-      ?.scrollIntoView({ behavior: "smooth" });
+    goToDownloadCta();
   };
 
   const onDark = navTone !== "light";

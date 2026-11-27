@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { MagicCard } from "@/components/ui/magic-card";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import { BlurFade } from "@/components/ui/blur-fade";
-import { cn } from "@/lib/utils";
+import { cn, goToDownloadCta } from "@/lib/utils";
 
 const plans = [
   {
@@ -118,11 +118,7 @@ function PlanCard({
             size="lg"
             variant={plan.featured ? "gradient" : "outline"}
             className="mt-7 w-full"
-            onClick={() =>
-              document
-                .getElementById("download-cta")
-                ?.scrollIntoView({ behavior: "smooth" })
-            }
+            onClick={goToDownloadCta}
           >
             {plan.cta}
           </Button>

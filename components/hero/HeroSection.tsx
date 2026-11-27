@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { siteContent } from "@/lib/content";
 import { Play, Smartphone } from "lucide-react";
 import { useParallax } from "@/hooks/useParallax";
-import { assetUrl } from "@/lib/utils";
+import { assetUrl, goToDownloadCta } from "@/lib/utils";
 
 const avatarData = [
   {
@@ -88,11 +88,7 @@ export function HeroSection() {
               <Button
                 size="lg"
                 variant="gradient"
-                onClick={() =>
-                  document
-                    .getElementById("download-cta")
-                    ?.scrollIntoView({ behavior: "smooth" })
-                }
+                onClick={goToDownloadCta}
               >
                 <Smartphone className="h-4 w-4" />
                 Get the app
